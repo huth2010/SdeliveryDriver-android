@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="PolyInputLayoutLogin" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxCornerRadiusTopStart">24dp</item>
+        <item name="boxCornerRadiusTopEnd">24dp</item>
+        <item name="boxCornerRadiusBottomStart">24dp</item>
+        <item name="boxCornerRadiusBottomEnd">24dp</item>
+        <item name="boxBackgroundColor">#F3F3F3</item>
+        <item name="boxStrokeColor">@color/boxstroke_outline</item>
+        <item name="android:layout_height">56dp</item>
+    </style>
+
+    <style name="PolyInputLayoutSpecial" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxCornerRadiusTopStart">24dp</item>
+        <item name="boxCornerRadiusTopEnd">24dp</item>
+        <item name="boxCornerRadiusBottomStart">24dp</item>
+        <item name="boxCornerRadiusBottomEnd">24dp</item>
+        <item name="boxBackgroundColor">#F3F3F3</item>
+        <item name="boxStrokeColor">@color/boxstroke_outline</item>
+        <item name="android:layout_height">56dp</item>
+    </style>
+
+    <style name="PolyInputLayoutChat" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxCornerRadiusTopStart">24dp</item>
+        <item name="boxCornerRadiusTopEnd">24dp</item>
+        <item name="boxCornerRadiusBottomStart">24dp</item>
+        <item name="boxCornerRadiusBottomEnd">24dp</item>
+        <item name="boxBackgroundColor">@color/grey_light</item>
+        <item name="boxStrokeColor">@color/boxstroke_outline</item>
+    </style>
+
+    <style name="PolyButton">
+        <item name="cornerRadius">44dp</item>
+        <item name="backgroundTint">@color/grey</item>
+    </style>
+
+    <style name="Text_Name">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">#F44849</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">18sp</item>
+    </style>
+
+    <style name="CustomDatePickerDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+    </style>
+
+        <style name="k_ch_c_">
+            <item name="android:textSize">16sp</item>
+            <item name="android:textColor">#000000</item>
+        </style>
+    <style name="pizza">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#F44849</item>
+    </style>
+    <style name="pizza1">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#66707A</item>
+        <item name="android:layout_marginLeft">5dp</item>
+    </style>
+    <style name="some_id">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#222B45</item>
+    </style>
+    <!-- styles.xml -->
+    <style name="h4">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+    <style name="NimpeButtonLogin">
+        <item name="cornerRadius">24dp</item>
+        <item name="backgroundTint">#f44849</item>
+
+    </style>
+    <style name="t_v_nh_di_n">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#171725</item>
+    </style>
+    <style name="b_n_ang_kha">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#9CA4AB</item>
+    </style>
+    <style name="pizza_th_gi">
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#171725</item>
+    </style>
+
+    <style name="TitleToolBarChat">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">#171725</item>
+        <item name="fontWeight">600</item>
+    </style>
+    <style name="off">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#F44849</item>
+    </style>
+    <style name="type_16">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#FACC15</item>
+    </style>
+    <style name="nh_gi_cao">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#171725</item>
+    </style>
+    <style name="xem_th_m">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#F44849</item>
+<!--        <item name="android:textStyle">italic</item>-->
+    </style>
+    <style name="ph_bi_n">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#171725</item>
+    </style>
+    <style name="gi_h_ng">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#171725</item>
+    </style>
+    <style name="xo_">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#F44849</item>
+    </style>
+    <style name="thanh_to_n_">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+</resources>
