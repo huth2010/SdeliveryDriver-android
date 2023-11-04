@@ -62,77 +62,50 @@
             android:layout_marginTop="8dp"
             android:orientation="horizontal"
             android:weightSum="3">
-
-            <!-- Price -->
             <LinearLayout
-                android:id="@+id/layout_price"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start|center"
-                android:layout_weight="1"
                 android:orientation="vertical">
-
                 <TextView
                     android:textColor="@color/black"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Giá tiền"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="200.000 d"
-                    android:textColor="@color/red"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layout_quanlity"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:textColor="@color/black"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Số lượng"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:textColor="@color/black"
-                    android:id="@+id/quanlity"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="2 món"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:orientation="vertical">
-
-                <TextView
-                    android:background="@drawable/background_border_outline"
-                    android:id="@+id/btn_detail_order"
+                    android:id="@+id/recipientName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="8dp"
-                    android:paddingHorizontal="16dp"
-                    android:textColor="?attr/colorPrimary"
-                    android:text="Chi tiết" />
+                    android:layout_gravity="center_vertical"
+                    android:text="Bao Bao"
+                    android:layout_marginBottom="4dp"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
+                <TextView
+                    android:textColor="@color/black"
+                    android:id="@+id/phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="08531234"
+                    android:textSize="16sp" />
+                <TextView
+                    android:textColor="@color/black"
+                    android:id="@+id/address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="Số 35 Tô Vĩnh Diện, Nguyễn Trãi, Hà Nội"
+                    android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
-
+        <Button
+            android:id="@+id/btn_take_order"
+            android:layout_below="@+id/id_order"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="16dp"
+            android:text="Nhận" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

@@ -74,10 +74,48 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
-
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcy_order"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        tools:listitem="@layout/item_order" />
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
+            <RelativeLayout
+                android:id="@+id/layout_delivery"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_margin="8dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/background_boder_radius_circle"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/order_quantity"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/btn_delivery"
+                    android:drawableStart="@drawable/icon_car"
+                    android:drawableTint="@color/red_light"
+                    android:gravity="center"
+                    android:paddingStart="10dp"
+                    android:text="Bạn có 2 đơn phải giao"
+                    android:textColor="@color/title" />
+
+                <Button
+                    android:id="@+id/btn_delivery"
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:backgroundTint="@color/blue_while"
+                    android:text="Đi giao"
+                    android:textColor="@color/blue_light"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
         </RelativeLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

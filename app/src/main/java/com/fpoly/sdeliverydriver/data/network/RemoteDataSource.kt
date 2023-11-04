@@ -25,7 +25,7 @@ class RemoteDataSource(
             .build()
             .create(apiClass)
     }
-    // build okhttp
+
     private fun getHttpClientBuilder(context: Context) : OkHttpClient.Builder{
         var builder: OkHttpClient.Builder = OkHttpClient.Builder()
         builder.addInterceptor(getInterceptorHeader(context))
@@ -33,7 +33,6 @@ class RemoteDataSource(
         return builder
     }
 
-    // add header
     private fun getInterceptorHeader(context: Context): Interceptor
             = Interceptor {
                 var originalRequest: Request = it.request()
@@ -47,7 +46,6 @@ class RemoteDataSource(
             }
     }
 
-// log data
     private fun getInterceptorLogging(): HttpLoggingInterceptor
             = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
