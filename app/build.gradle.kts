@@ -4,6 +4,7 @@ plugins {
     id("androidx.navigation.safeargs")
     id("kotlin-kapt")
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -92,8 +93,6 @@ dependencies {
     implementation("com.google.dagger:dagger-android-support:2.48")
 
     kapt("com.google.dagger:dagger-compiler:2.48")?.let { implementation(it) }
-//    kapt("com.google.dagger:dagger-android-processor:2.35.1")?.let { implementation(it) }
-//    kapt("androidx.room:room-compiler:2.5.1")?.let { implementation(it) }
 
     // Effects imageview
     implementation("com.airbnb.android:lottie:6.0.1")
@@ -130,5 +129,9 @@ dependencies {
 
     // swipe load
     implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    //    gg maps util for clustering
+    implementation ("com.google.maps.android:android-maps-utils:3.4.0")
+    implementation ("com.google.maps.android:maps-utils-ktx:3.4.0")
 
 }

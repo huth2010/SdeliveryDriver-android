@@ -192,4 +192,5 @@ Thanh toán
     <string name="payment_id">no value</string>
     <string name="payment_fail">fail</string>
     <string name="error_500">server error</string>
+    <string name="delivery">Delivery</string>
 </resources>
