@@ -56,6 +56,11 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation("com.google.firebase:firebase-firestore:24.9.1")
+    implementation("com.google.firebase:firebase-analytics:21.5.0")
+    implementation("com.google.firebase:firebase-messaging:23.3.1")
 
     // extention
     implementation("androidx.fragment:fragment-ktx:1.6.1")
@@ -102,12 +107,7 @@ dependencies {
 
     // map
     implementation("com.google.android.gms:play-services-maps:18.1.0")
-
-    // firebase
-    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
-    implementation("com.google.firebase:firebase-analytics-ktx")
-
-    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.android.libraries.places:places:2.5.0")
 
     // Socket
     implementation ("io.socket:socket.io-client:2.0.0")

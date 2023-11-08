@@ -42,80 +42,17 @@
             android:textAppearance="@style/some_id"
             android:translationY="-2.45sp" />
 
-        <RelativeLayout
-            android:id="@+id/group_11"
-            android:layout_width="110dp"
-            android:layout_height="40dp"
+        <TextView
+            android:id="@+id/size"
+            android:layout_margin="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:textColor="?attr/colorPrimary"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="1dp">
-
-
-            <RelativeLayout
-                android:id="@+id/linear_minu1_sheet"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="center"
-                android:background="@drawable/clip">
-
-
-                <View
-                    android:id="@+id/vuesax_line1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginLeft="9dp"
-                    android:layout_marginTop="9dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/tru"
-                    android:gravity="center" />
-
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/some_id_quanlity_sheet"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_toRightOf="@+id/linear_minu1_sheet"
-                android:gravity="center_horizontal|top"
-                android:lineSpacingExtra="5sp"
-                android:text="2"
-                android:textAppearance="@style/some_id"
-                android:translationY="-2.27sp" />
-
-            <RelativeLayout
-                android:id="@+id/linear_minu2_sheet"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="center"
-                android:layout_marginLeft="14dp"
-                android:layout_toRightOf="@+id/some_id_quanlity_sheet"
-                android:background="@drawable/clip">
-
-
-                <View
-                    android:id="@+id/vuesax_line2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="9dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/cong"
-                    android:gravity="center" />
-
-            </RelativeLayout>
-        </RelativeLayout>
+            android:background="@drawable/background_border_outline"
+            android:text="@string/Size_M"/>
 
     </RelativeLayout>

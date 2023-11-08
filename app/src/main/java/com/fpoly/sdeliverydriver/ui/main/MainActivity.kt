@@ -1,12 +1,7 @@
 package com.fpoly.sdeliverydriver.ui.main
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -20,17 +15,13 @@ import com.fpoly.sdeliverydriver.databinding.ActivityMainBinding
 import com.fpoly.sdeliverydriver.ui.main.home.HomeViewEvent
 import com.fpoly.sdeliverydriver.ui.main.home.HomeViewModel
 import com.fpoly.sdeliverydriver.ui.main.home.HomeViewState
-import com.fpoly.sdeliverydriver.ui.main.home.TestViewModel
-import com.fpoly.sdeliverydriver.ui.main.home.TestViewModelMvRx
 import com.fpoly.sdeliverydriver.ui.main.profile.UserViewModel
 import com.fpoly.sdeliverydriver.ui.main.profile.UserViewState
 import com.fpoly.sdeliverydriver.ui.security.SecurityViewModel
 import com.fpoly.sdeliverydriver.ui.security.SecurityViewState
-import com.fpoly.sdeliverydriver.ultis.addFragmentToBackstack
 import com.fpoly.sdeliverydriver.ultis.changeLanguage
 import com.fpoly.sdeliverydriver.ultis.changeMode
 import javax.inject.Inject
-
 
 class MainActivity : PolyBaseActivity<ActivityMainBinding>(), HomeViewModel.Factory,
     SecurityViewModel.Factory, UserViewModel.Factory {
@@ -100,7 +91,6 @@ class MainActivity : PolyBaseActivity<ActivityMainBinding>(), HomeViewModel.Fact
     override fun create(initialState: HomeViewState): HomeViewModel {
         return homeViewModelFactory.create(initialState)
     }
-
 
     override fun create(initialState: SecurityViewState): SecurityViewModel {
         return securityModelFactory.create(initialState)

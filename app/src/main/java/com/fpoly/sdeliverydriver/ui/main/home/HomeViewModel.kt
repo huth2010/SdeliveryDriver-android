@@ -8,14 +8,17 @@ import com.airbnb.mvrx.Uninitialized
 import com.airbnb.mvrx.ViewModelContext
 import com.fpoly.sdeliverydriver.core.PolyBaseViewModel
 import com.fpoly.sdeliverydriver.data.model.UpdateStatusRequest
+import com.fpoly.sdeliverydriver.data.model.UserLocation
 import com.fpoly.sdeliverydriver.data.repository.OrderRepository
+import com.fpoly.sdeliverydriver.data.repository.PlacesRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 
 class HomeViewModel @AssistedInject constructor(
     @Assisted state: HomeViewState,
-    private val repository: OrderRepository
+    private val repository: OrderRepository,
+    private val placesRepository: PlacesRepository
 ) : PolyBaseViewModel<HomeViewState, HomeViewAction, HomeViewEvent>(state) {
 
     override fun handle(action: HomeViewAction) {
@@ -23,14 +26,33 @@ class HomeViewModel @AssistedInject constructor(
             is HomeViewAction.GetAllOrderByStatus -> handleGetAllOrderByStatus(action.statusId)
             is HomeViewAction.UpdateOrderStatus -> handleUpdateOrderStatus(
                 action.id,
+                action.shipperId,
                 action.statusRequest
             )
+            is HomeViewAction.GetCurrentOrder -> handleGetCurrentOrder(action.id)
+            is HomeViewAction.GetCurrentLocation -> handleGetCurrentLocation(action.lat,action.lon)
         }
     }
 
-    private fun handleUpdateOrderStatus(id: String, statusRequest: UpdateStatusRequest) {
+    private fun handleGetCurrentLocation(lat: Double, lon: Double) {
+        setState { copy(asyncGetCurrentLocation = Loading()) }
+        placesRepository.getLocationName(lat,lon)
+            .execute {
+                copy(asyncGetCurrentLocation = it)
+            }
+    }
+
+    private fun handleGetCurrentOrder(id: String) {
+        setState { copy(asyncGetCurrentOrder = Loading()) }
+        repository.getCurrentOrder(id)
+            .execute {
+                copy(asyncGetCurrentOrder = it)
+            }
+    }
+
+    private fun handleUpdateOrderStatus(id: String, shipperId: String,statusRequest: UpdateStatusRequest) {
         setState { copy(asyncUpdateOrderStatus = Loading()) }
-        repository.updateOrderStatus(id, statusRequest)
+        repository.updateOrderStatus(id, shipperId ,statusRequest)
             .execute {
                 copy(asyncUpdateOrderStatus = it)
             }
@@ -48,7 +70,7 @@ class HomeViewModel @AssistedInject constructor(
 
             "65264c672d9b3bb388078978" -> {
                 setState { copy(asyncDelivering = Loading()) }
-                repository.getAllOrderByStatus(statusId)
+                repository.getAllOrderByShipper(statusId)
                     .execute {
                         copy(asyncDelivering = it)
                     }
@@ -56,7 +78,7 @@ class HomeViewModel @AssistedInject constructor(
 
             "6526a6e6adce6a54f6f67d7d" -> {
                 setState { copy(asyncCompleted = Loading()) }
-                repository.getAllOrderByStatus(statusId)
+                repository.getAllOrderByShipper(statusId)
                     .execute {
                         copy(asyncCompleted = it)
                     }
@@ -64,7 +86,7 @@ class HomeViewModel @AssistedInject constructor(
 
             "653bc0a72006e5791beab35b" -> {
                 setState { copy(asyncCancelled = Loading()) }
-                repository.getAllOrderByStatus(statusId)
+                repository.getAllOrderByShipper(statusId)
                     .execute {
                         copy(asyncCancelled = it)
                     }

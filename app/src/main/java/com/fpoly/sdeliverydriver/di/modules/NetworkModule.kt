@@ -6,6 +6,7 @@ import com.fpoly.sdeliverydriver.data.network.AuthApi
 import com.fpoly.sdeliverydriver.data.network.ChatApi
 import com.fpoly.sdeliverydriver.data.network.ContentDataSource
 import com.fpoly.sdeliverydriver.data.network.OrderApi
+import com.fpoly.sdeliverydriver.data.network.PlacesApi
 import com.fpoly.sdeliverydriver.data.network.RemoteDataSource
 import com.fpoly.sdeliverydriver.data.network.SessionManager
 import com.fpoly.sdeliverydriver.data.network.SocketManager
@@ -14,6 +15,7 @@ import com.fpoly.sdeliverydriver.data.repository.AuthRepository
 import com.fpoly.sdeliverydriver.data.repository.ChatRepository
 import com.fpoly.sdeliverydriver.data.repository.HomeRepository
 import com.fpoly.sdeliverydriver.data.repository.OrderRepository
+import com.fpoly.sdeliverydriver.data.repository.PlacesRepository
 import com.fpoly.sdeliverydriver.ui.chat.call.WebRTCClient
 import com.fpoly.sdeliverydriver.data.repository.UserRepository
 import dagger.Module
@@ -54,6 +56,17 @@ object NetworkModule {
     fun providerUserRepository(
         api: UserApi
     ): UserRepository = UserRepository(api)
+
+    @Provides
+    fun providerApiPlaces(
+        remoteDataSource: RemoteDataSource,
+        context: Context
+    ): PlacesApi = remoteDataSource.buildApiOpenStreetMap(PlacesApi::class.java, context)
+
+    @Provides
+    fun providerPlacesRepository(
+        api: PlacesApi
+    ): PlacesRepository = PlacesRepository(api)
 
     @Provides
     fun providerApiOrder(
