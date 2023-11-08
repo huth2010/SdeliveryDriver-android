@@ -1,46 +1,56 @@
 package com.fpoly.sdeliverydriver.ui.delivery
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.location.Location
-import androidx.fragment.app.Fragment
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
+import com.airbnb.mvrx.Fail
+import com.airbnb.mvrx.Success
+import com.airbnb.mvrx.activityViewModel
+import com.airbnb.mvrx.withState
+import com.bumptech.glide.Glide
 import com.fpoly.sdeliverydriver.R
 import com.fpoly.sdeliverydriver.core.PolyBaseFragment
+import com.fpoly.sdeliverydriver.data.model.OrderResponse
 import com.fpoly.sdeliverydriver.databinding.FragmentMapsBinding
-import com.fpoly.sdeliverydriver.ultis.RationaleDialog
-import com.fpoly.sdeliverydriver.ultis.isPermissionGranted
-
+import com.fpoly.sdeliverydriver.ui.main.home.HomeFragment.Companion.DELIVERING_STATUS
+import com.fpoly.sdeliverydriver.ui.main.home.HomeViewAction
+import com.fpoly.sdeliverydriver.ui.main.home.HomeViewModel
+import com.fpoly.sdeliverydriver.ultis.Constants.Companion.MAPVIEW_BUNDLE_KEY
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PointOfInterest
 
 class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback,
     GoogleMap.OnPoiClickListener,
-    GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener,
-    ActivityCompat.OnRequestPermissionsResultCallback {
+    GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapClickListener {
 
-    private var permissionDenied = false
+    private val homeViewModel: HomeViewModel by activityViewModel()
     private lateinit var googleMap: GoogleMap
+    private val orderList = mutableListOf<OrderResponse>()
+    private var mapFragment: SupportMapFragment? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(this)
+        initMap()
         setupAppBar()
+        initData()
         listenEvent()
+    }
+
+    private fun initMap() {
+        mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment?.getMapAsync(this)
     }
 
     private fun setupAppBar() {
@@ -50,21 +60,88 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
         }
     }
 
+    private fun initData() {
+        homeViewModel.handle(HomeViewAction.GetAllOrderByStatus(DELIVERING_STATUS))
+    }
+
     private fun listenEvent() {
         views.appBar.btnBackToolbar.setOnClickListener {
             activity?.finish()
         }
+        views.btnDetailOrder.setOnClickListener {
+        findNavController().navigate(R.id.action_mapsFragment_to_deliveryOrderDetailFragment)
+        }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        var mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY)
+        if (mapViewBundle == null) {
+            mapViewBundle = Bundle()
+            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle)
+        }
+        mapFragment?.onSaveInstanceState(mapViewBundle)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapFragment?.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapFragment?.onStop()
+    }
+
+    override fun onPause() {
+        mapFragment?.onPause()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        mapFragment?.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapFragment?.onLowMemory()
+    }
+
+    @SuppressLint("PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
-        val sydney = LatLng(21.035669812266214, 105.76653952510127)
-        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         googleMap.setOnPoiClickListener(this)
         googleMap.setOnMyLocationButtonClickListener(this)
         googleMap.setOnMyLocationClickListener(this)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15F))
-        enableMyLocation()
+        googleMap.setOnMapClickListener(this)
+        googleMap.setOnMarkerClickListener { marker ->
+            handleMarkerClick(marker)
+            false
+        }
+    }
+
+    private fun handleMarkerClick(marker: Marker) {
+        val markerPosition = marker.position
+        val selectedOrder = orderList.find { it.address.toLatLng() == markerPosition }
+        if (selectedOrder != null) {
+            setupOrderLayout(selectedOrder)
+            homeViewModel.handle(HomeViewAction.GetCurrentOrder(selectedOrder._id))
+        }
+    }
+
+    private fun setupOrderLayout(selectedOrder: OrderResponse) {
+        views.apply {
+            layoutAddress.visibility = View.VISIBLE
+            Glide.with(requireContext())
+                .load(selectedOrder.userId.avatar?.url)
+                .placeholder(R.drawable.baseline_person_outline_24)
+                .error(R.drawable.baseline_person_outline_24)
+                .into(imgAvatar)
+            recipientName.text = selectedOrder.address.recipientName
+            phone.text = selectedOrder.address.phoneNumber
+            address.text = selectedOrder.address.addressLine
+        }
     }
 
     override fun onPoiClick(poi: PointOfInterest) {
@@ -87,94 +164,21 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
             .show()
     }
 
-    @SuppressLint("MissingPermission")
-    private fun enableMyLocation() {
-
-        // 1. Check if permissions are granted, if so, enable the my location layer
-        if (ContextCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            googleMap.isMyLocationEnabled = true
-            return
-        }
-
-        // 2. If if a permission rationale dialog should be shown
-        if (ActivityCompat.shouldShowRequestPermissionRationale(
-                requireActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) || ActivityCompat.shouldShowRequestPermissionRationale(
-                requireActivity(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        ) {
-            RationaleDialog.newInstance(
-                MapsFragment.LOCATION_PERMISSION_REQUEST_CODE, true
-            ).show(requireActivity().supportFragmentManager, "dialog")
-            return
-        }
-
-        // 3. Otherwise, request permission
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ),
-            MapsFragment.LOCATION_PERMISSION_REQUEST_CODE
-        )
+    override fun onMapClick(p0: LatLng) {
+        views.layoutAddress.visibility = View.GONE
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
-            super.onRequestPermissionsResult(
-                requestCode,
-                permissions,
-                grantResults
-            )
-            return
+    private fun setupLocationCustomerMarkers(orders: List<OrderResponse>) {
+        for (order in orders) {
+            val orderLocation = order.address?.toLatLng()
+            if (orderLocation != null) {
+                val marker = MarkerOptions()
+                    .position(orderLocation)
+                    .title(order.address.recipientName)
+                googleMap.addMarker(marker)
+                orderList.add(order)
+            }
         }
-
-        if (isPermissionGranted(
-                permissions,
-                grantResults,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) || isPermissionGranted(
-                permissions,
-                grantResults,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        ) {
-            enableMyLocation()
-        } else {
-            permissionDenied = true
-        }
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        if (permissionDenied) {
-            showMissingPermissionError()
-            permissionDenied = false
-        }
-    }
-
-    private fun showMissingPermissionError() {
-        RationaleDialog.newInstance(LOCATION_PERMISSION_REQUEST_CODE, true)
-            .show(requireActivity().supportFragmentManager, "dialog")
-    }
-
-    companion object {
-        const val LOCATION_PERMISSION_REQUEST_CODE = 1
     }
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentMapsBinding {
@@ -182,6 +186,21 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
     }
 
     override fun invalidate() {
+        withState(homeViewModel) {
+            when (it.asyncDelivering) {
+                is Success -> {
+                    val orders = it.asyncDelivering.invoke() ?: emptyList()
+                    val firstOrderLocation = orders.firstOrNull()?.address?.toLatLng()
+                    if (firstOrderLocation != null) {
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(firstOrderLocation, 17F))
+                        setupLocationCustomerMarkers(orders)
+                    }
+                }
+                is Fail -> {
+                }
+                else -> {
+                }
+            }
+        }
     }
-
 }

@@ -14,11 +14,22 @@ class RemoteDataSource(
 ) {
     companion object{
         public const val BASE_URL = "http://192.168.1.44:3000"
+        public const val OPEN_STREET_MAP_URL = "https://nominatim.openstreetmap.org/"
     }
 
     public fun <API> buildApi(apiClass: Class<API>, context: Context): API{
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
+            .client(getHttpClientBuilder(context).build())
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .build()
+            .create(apiClass)
+    }
+
+    public fun <API> buildApiOpenStreetMap(apiClass: Class<API>, context: Context): API{
+        return Retrofit.Builder()
+            .baseUrl(OPEN_STREET_MAP_URL)
             .client(getHttpClientBuilder(context).build())
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

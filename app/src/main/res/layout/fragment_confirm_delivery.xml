@@ -1,14 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".ui.delivery.ConfirmDeliveryFragment">
+    <include layout="@layout/toolbar_header"
+        android:id="@+id/appBar"/>
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!-- Content -->
+    <LinearLayout
+        android:layout_below="@+id/appBar"
+        android:id="@+id/contentLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical"
+        android:gravity="start"
+        android:padding="16dp">
 
-</FrameLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bạn đã giao hàng tới tay khách hàng"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="16sp"
+             />
+
+        <!-- Order Code -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mã Đơn Hàng: ABC123"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="16sp"
+             />
+
+        <ImageView
+            android:layout_marginTop="16dp"
+            android:src="@drawable/loading_img"
+            android:id="@+id/choosePhoto"
+            android:scaleType="centerCrop"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            />
+
+        <LinearLayout
+            android:weightSum="2"
+            android:paddingVertical="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <!-- Capture Photo Button -->
+            <TextView
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"
+                android:id="@+id/capturePhotoButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:text=" Chụp Ảnh"
+                android:gravity="center"
+                android:padding="24dp"
+                android:drawableStart="@drawable/icon_camera"
+                android:background="@drawable/background_border_gray_outline"
+                android:textSize="18sp" />
+
+            <!-- Choose Photo Button -->
+            <TextView
+                android:layout_weight="1"
+                android:id="@+id/choosePhotoButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:text=" Thư viện"
+                android:gravity="center"
+                android:padding="24dp"
+                android:drawableStart="@drawable/icon_home_outline"
+                android:background="@drawable/background_border_gray_outline"
+                android:textSize="18sp" />
+            <!-- Comment Section -->
+        </LinearLayout>
+        <EditText
+            android:id="@+id/commentEditText"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:hint="Nhận xét về cuốc giao"
+            android:padding="16dp"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="16sp"
+            android:maxLines="10"
+            android:background="@drawable/background_border_gray_outline"
+            android:gravity="top"
+            />
+    </LinearLayout>
+
+    <!-- Confirm Button -->
+    <Button
+        android:id="@+id/confirmButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:text="Xác Nhận"
+        android:backgroundTint="@color/green"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+</RelativeLayout>

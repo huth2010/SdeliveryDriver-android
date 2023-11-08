@@ -9,6 +9,7 @@ import com.fpoly.sdeliverydriver.di.modules.NetworkModule
 import com.fpoly.sdeliverydriver.di.modules.ViewModelModule
 import com.fpoly.sdeliverydriver.ui.chat.ChatActivity
 import com.fpoly.sdeliverydriver.ui.chat.home.HomeChatFragment
+import com.fpoly.sdeliverydriver.ui.delivery.DeliveryActivity
 import com.fpoly.sdeliverydriver.ui.main.MainActivity
 import com.fpoly.sdeliverydriver.ui.main.profile.ChangePasswordFragment
 import com.fpoly.sdeliverydriver.ui.main.profile.LanguageFragment
@@ -31,6 +32,7 @@ interface PolyComponent {
     fun inject(activity: MainActivity)
     fun inject(activity: LoginActivity)
     fun inject(activity: ChatActivity)
+    fun inject(activity: DeliveryActivity)
     fun inject(fragment: LoginFragment)
     fun inject(fragment: ProfileFragment)
     fun inject(fragment: HomeChatFragment)

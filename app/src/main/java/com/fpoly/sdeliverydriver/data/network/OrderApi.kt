@@ -19,12 +19,18 @@ interface OrderApi {
         @Query("statusId") statusId: String
     ): Observable<List<OrderResponse>>
 
+    @GET("/api/orders/delivering")
+    fun getAllOrderByShipper(
+        @Query("statusId") statusId: String
+    ): Observable<List<OrderResponse>>
+
     @GET("/api/order/{id}")
     fun getCurrentOrder(@Path("id") id: String): Observable<OrderResponse>
 
     @PATCH("/api/order/{id}")
     fun updateStatusOrder(
         @Path("id") id: String,
+        @Query("shipperId") shipperId: String,
         @Body statusRequest: UpdateStatusRequest
     ): Observable<OrderResponse>
 }

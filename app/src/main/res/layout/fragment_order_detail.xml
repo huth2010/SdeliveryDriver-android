@@ -43,7 +43,7 @@
                     android:layout_height="20dp"
                     android:layout_marginRight="32dp"
                     android:text="Tài xế đang chờ lấy hàng"
-                    android:textSize="14dp" />
+                    android:textSize="14sp" />
 
                 <LinearLayout
                     android:id="@+id/orderStatusProgressLayout"
@@ -141,7 +141,7 @@
                         android:layout_width="178dp"
                         android:layout_height="21dp"
                         android:text="Nhà hàng giao"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/restaurantName"
@@ -181,7 +181,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Thời gian đặt"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/orderTimeValue"
@@ -190,7 +190,7 @@
                         android:layout_weight="1"
                         android:text="16/11/2022, 12:30 - 13:00"
                         android:textAlignment="textEnd"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -205,7 +205,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Mã đơn hàng"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/orderCodeValue"
@@ -214,7 +214,7 @@
                         android:layout_weight="1"
                         android:text="#252893"
                         android:textAlignment="textEnd"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -229,7 +229,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Thời gian nhận"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/pickupTimeValue"
@@ -238,7 +238,7 @@
                         android:layout_weight="1"
                         android:text="Hôm nay, 12:15"
                         android:textAlignment="textEnd"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -270,7 +270,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Người nhận:"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/recipientName"
@@ -279,7 +279,7 @@
                         android:layout_weight="1"
                         android:text="Nguyễn Văn Khuyến"
                         android:textAlignment="textEnd"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -294,7 +294,7 @@
                         android:layout_height="21dp"
                         android:layout_weight="1"
                         android:text="Số điện thoại:"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/phoneNumber"
@@ -303,7 +303,7 @@
                         android:layout_weight="1"
                         android:text=" 0988522939"
                         android:textAlignment="textEnd"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -318,7 +318,7 @@
                         android:layout_height="21dp"
                         android:layout_weight="1"
                         android:text="Địa chỉ:"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/location"
@@ -327,7 +327,7 @@
                         android:layout_weight="1"
                         android:text="315,  Trường Chinh, Khương Mai, Đống Đa, Hà Nội"
                         android:textAlignment="textEnd"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -357,7 +357,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Tiền mặt"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -367,7 +367,7 @@
                         android:layout_weight="1"
                         android:text="Thanh toán khi nhận hàng"
                         android:textAlignment="textEnd"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
 

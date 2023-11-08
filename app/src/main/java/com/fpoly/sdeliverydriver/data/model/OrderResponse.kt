@@ -15,5 +15,5 @@ data class OrderResponse(
     val status: Status,
     val total: Int,
     val updatedAt: String,
-    val userId: String
+    val userId: User
 ):Serializable

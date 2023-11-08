@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_delivery"
+    app:startDestination="@id/mapsFragment">
+
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.fpoly.sdeliverydriver.ui.delivery.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps" >
+        <action
+            android:id="@+id/action_mapsFragment_to_deliveryOrderDetailFragment"
+            app:destination="@id/deliveryOrderDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/deliveryOrderDetailFragment"
+        android:name="com.fpoly.sdeliverydriver.ui.delivery.DeliveryOrderDetailFragment"
+        android:label="fragment_delivery_order_detail"
+        tools:layout="@layout/fragment_delivery_order_detail" >
+        <action
+            android:id="@+id/action_deliveryOrderDetailFragment_to_problemFragment2"
+            app:destination="@id/problemFragment" />
+        <action
+            android:id="@+id/action_deliveryOrderDetailFragment_to_confirmDeliveryFragment"
+            app:destination="@id/confirmDeliveryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/problemFragment"
+        android:name="com.fpoly.sdeliverydriver.ui.delivery.ProblemFragment"
+        android:label="fragment_problem"
+        tools:layout="@layout/fragment_problem" />
+    <fragment
+        android:id="@+id/confirmDeliveryFragment"
+        android:name="com.fpoly.sdeliverydriver.ui.delivery.ConfirmDeliveryFragment"
+        android:label="fragment_confirm_delivery"
+        tools:layout="@layout/fragment_confirm_delivery" />
+</navigation>

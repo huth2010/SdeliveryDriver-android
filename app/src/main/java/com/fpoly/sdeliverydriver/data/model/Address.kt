@@ -1,5 +1,6 @@
 package com.fpoly.sdeliverydriver.data.model
 
+import com.google.android.gms.maps.model.LatLng
 import java.io.Serializable
 
 data class Address(
@@ -11,4 +12,8 @@ data class Address(
     val longitude: Double,
     val userId: String,
     var isSelected: Boolean
-):Serializable
+):Serializable{
+    fun toLatLng(): LatLng {
+        return LatLng(latitude, longitude)
+    }
+}

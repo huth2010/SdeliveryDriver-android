@@ -39,7 +39,7 @@
                     android:layout_marginTop="16dp"
                     android:shadowRadius="40"
                     android:text="Thêm mặt hàng"
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:textColor="#171725"
                     android:backgroundTint="#ECF1F6"/>
                 <com.google.android.material.textview.MaterialTextView

@@ -16,9 +16,12 @@ class OrderRepository @Inject constructor(
     fun getAllOrderByStatus(statusId: String): Observable<List<OrderResponse>> =
         api.getAllOrderByStatus(statusId).subscribeOn(Schedulers.io())
 
+    fun getAllOrderByShipper(statusId: String): Observable<List<OrderResponse>> =
+        api.getAllOrderByShipper(statusId).subscribeOn(Schedulers.io())
+
     fun getCurrentOrder(id: String): Observable<OrderResponse> =
         api.getCurrentOrder(id).subscribeOn(Schedulers.io())
 
-    fun updateOrderStatus(id: String, updateStatusRequest: UpdateStatusRequest): Observable<OrderResponse> =
-        api.updateStatusOrder(id, updateStatusRequest).subscribeOn(Schedulers.io())
+    fun updateOrderStatus(id: String,shipperId: String, updateStatusRequest: UpdateStatusRequest): Observable<OrderResponse> =
+        api.updateStatusOrder(id,shipperId, updateStatusRequest).subscribeOn(Schedulers.io())
 }
