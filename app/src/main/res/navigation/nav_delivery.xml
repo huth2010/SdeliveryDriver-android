@@ -20,7 +20,7 @@
         android:label="fragment_delivery_order_detail"
         tools:layout="@layout/fragment_delivery_order_detail" >
         <action
-            android:id="@+id/action_deliveryOrderDetailFragment_to_problemFragment2"
+            android:id="@+id/action_deliveryOrderDetailFragment_to_problemFragment"
             app:destination="@id/problemFragment" />
         <action
             android:id="@+id/action_deliveryOrderDetailFragment_to_confirmDeliveryFragment"
@@ -30,10 +30,19 @@
         android:id="@+id/problemFragment"
         android:name="com.fpoly.sdeliverydriver.ui.delivery.ProblemFragment"
         android:label="fragment_problem"
-        tools:layout="@layout/fragment_problem" />
+        tools:layout="@layout/fragment_problem" >
+        <action
+            android:id="@+id/action_problemFragment_to_reasonBottomSheetFragment"
+            app:destination="@id/reasonBottomSheetFragment" />
+    </fragment>
     <fragment
         android:id="@+id/confirmDeliveryFragment"
         android:name="com.fpoly.sdeliverydriver.ui.delivery.ConfirmDeliveryFragment"
         android:label="fragment_confirm_delivery"
         tools:layout="@layout/fragment_confirm_delivery" />
+    <dialog
+        android:id="@+id/reasonBottomSheetFragment"
+        android:name="com.fpoly.sdeliverydriver.ui.delivery.ReasonBottomSheetFragment"
+        android:label="ReasonBottomSheetFragment"
+        tools:layout="@layout/fragment_reason_bottom_sheet"/>
 </navigation>

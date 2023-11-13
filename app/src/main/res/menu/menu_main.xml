@@ -12,7 +12,7 @@
         />
 
     <item
-        android:id="@+id/orderFragment"
+        android:id="@+id/DeliveryOrderFragment"
         android:icon="@drawable/icon_cart"
         android:title="@string/order"
         app:cnb_backgroundColor="@color/red_light"

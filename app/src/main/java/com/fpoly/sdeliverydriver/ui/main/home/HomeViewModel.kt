@@ -7,10 +7,16 @@ import com.airbnb.mvrx.MvRxViewModelFactory
 import com.airbnb.mvrx.Uninitialized
 import com.airbnb.mvrx.ViewModelContext
 import com.fpoly.sdeliverydriver.core.PolyBaseViewModel
+import com.fpoly.sdeliverydriver.data.model.DeliveryOrder
 import com.fpoly.sdeliverydriver.data.model.UpdateStatusRequest
 import com.fpoly.sdeliverydriver.data.model.UserLocation
+import com.fpoly.sdeliverydriver.data.repository.DeliveryRepository
 import com.fpoly.sdeliverydriver.data.repository.OrderRepository
 import com.fpoly.sdeliverydriver.data.repository.PlacesRepository
+import com.fpoly.sdeliverydriver.ultis.Constants.Companion.CANCEL_STATUS
+import com.fpoly.sdeliverydriver.ultis.Constants.Companion.CONFIRMED_STATUS
+import com.fpoly.sdeliverydriver.ultis.Constants.Companion.DELIVERING_STATUS
+import com.fpoly.sdeliverydriver.ultis.Constants.Companion.SUCCESS_STATUS
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -18,8 +24,16 @@ import dagger.assisted.AssistedInject
 class HomeViewModel @AssistedInject constructor(
     @Assisted state: HomeViewState,
     private val repository: OrderRepository,
-    private val placesRepository: PlacesRepository
+    private val placesRepository: PlacesRepository,
+    private val deliveryOrderRepository: DeliveryRepository
 ) : PolyBaseViewModel<HomeViewState, HomeViewAction, HomeViewEvent>(state) {
+
+    init {
+        handleGetAllOrderByStatus(CONFIRMED_STATUS)
+        handleGetAllOrderByStatus(DELIVERING_STATUS)
+        handleGetAllDeliveryOrders(SUCCESS_STATUS)
+        handleGetAllDeliveryOrders(CANCEL_STATUS)
+    }
 
     override fun handle(action: HomeViewAction) {
         when (action) {
@@ -31,9 +45,29 @@ class HomeViewModel @AssistedInject constructor(
             )
             is HomeViewAction.GetCurrentOrder -> handleGetCurrentOrder(action.id)
             is HomeViewAction.GetCurrentLocation -> handleGetCurrentLocation(action.lat,action.lon)
+            is HomeViewAction.GetAllDeliveryOrders -> handleGetAllDeliveryOrders(action.statusId)
         }
     }
 
+    private fun handleGetAllDeliveryOrders(statusId: String) {
+        when(statusId){
+            SUCCESS_STATUS -> {
+                setState { copy(asyncSuccessDeliveries = Loading()) }
+                deliveryOrderRepository.getAllDeliveryOrders(statusId)
+                    .execute {
+                        copy(asyncSuccessDeliveries = it)
+                    }
+            }
+            CANCEL_STATUS -> {
+                setState { copy(asyncCancelDeliveries = Loading()) }
+                deliveryOrderRepository.getAllDeliveryOrders(statusId)
+                    .execute {
+                        copy(asyncCancelDeliveries = it)
+                    }
+            }
+        }
+
+    }
     private fun handleGetCurrentLocation(lat: Double, lon: Double) {
         setState { copy(asyncGetCurrentLocation = Loading()) }
         placesRepository.getLocationName(lat,lon)
@@ -60,7 +94,7 @@ class HomeViewModel @AssistedInject constructor(
 
     private fun handleGetAllOrderByStatus(statusId: String) {
         when (statusId) {
-            "65264c102d9b3bb388078976" -> {
+            CONFIRMED_STATUS -> {
                 setState { copy(asyncConfirmed = Loading()) }
                 repository.getAllOrderByStatus(statusId)
                     .execute {
@@ -68,27 +102,11 @@ class HomeViewModel @AssistedInject constructor(
                     }
             }
 
-            "65264c672d9b3bb388078978" -> {
+            DELIVERING_STATUS -> {
                 setState { copy(asyncDelivering = Loading()) }
                 repository.getAllOrderByShipper(statusId)
                     .execute {
                         copy(asyncDelivering = it)
-                    }
-            }
-
-            "6526a6e6adce6a54f6f67d7d" -> {
-                setState { copy(asyncCompleted = Loading()) }
-                repository.getAllOrderByShipper(statusId)
-                    .execute {
-                        copy(asyncCompleted = it)
-                    }
-            }
-
-            "653bc0a72006e5791beab35b" -> {
-                setState { copy(asyncCancelled = Loading()) }
-                repository.getAllOrderByShipper(statusId)
-                    .execute {
-                        copy(asyncCancelled = it)
                     }
             }
         }

@@ -27,7 +27,7 @@ import com.fpoly.sdeliverydriver.R
 import com.fpoly.sdeliverydriver.data.model.User
 import com.fpoly.sdeliverydriver.data.model.UserLocation
 import com.fpoly.sdeliverydriver.ui.main.MainActivity
-import com.fpoly.sdeliverydriver.ui.main.home.HomeFragment.Companion.collection_user_locations
+import com.fpoly.sdeliverydriver.ultis.Constants.Companion.collection_user_locations
 
 class LocationService : Service() {
     private var mFusedLocationClient: FusedLocationProviderClient? = null

@@ -1,4 +1,4 @@
-package com.fpoly.sdeliverydriver.ui.main.order
+package com.fpoly.sdeliverydriver.ui.main.order.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

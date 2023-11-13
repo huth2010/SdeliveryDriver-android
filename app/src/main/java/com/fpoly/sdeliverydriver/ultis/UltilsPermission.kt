@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.fpoly.sdeliverydriver.R
+import com.fpoly.sdeliverydriver.data.model.Notify
 import com.permissionx.guolindev.PermissionX
 
 fun Activity.startToDetailPermission() {
@@ -52,8 +53,16 @@ fun Fragment.checkPermissionGallery(isAllow: (Boolean) -> Unit) {
      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
          PermissionX.init(this)
              .permissions(
-                 Manifest.permission.ACCESS_FINE_LOCATION,
-                 Manifest.permission.POST_NOTIFICATIONS
+                 Manifest.permission.POST_NOTIFICATIONS,
+                 Manifest.permission.ACCESS_FINE_LOCATION
+             )
+             .request{ allGranted,_,_ ->
+                 isAllow(allGranted)
+             }
+     }else{
+         PermissionX.init(this)
+             .permissions(
+                 Manifest.permission.ACCESS_FINE_LOCATION
              )
              .request{ allGranted,_,_ ->
                  isAllow(allGranted)

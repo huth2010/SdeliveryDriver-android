@@ -27,9 +27,13 @@
             app:destination="@id/languageFragment" />
     </fragment>
     <fragment
-        android:id="@+id/orderFragment"
-        android:name="com.fpoly.sdeliverydriver.ui.main.order.OrderFragment"
-        android:label="OrderFragment" />
+        android:id="@+id/DeliveryOrderFragment"
+        android:name="com.fpoly.sdeliverydriver.ui.main.order.DeliveryOrderFragment"
+        android:label="DeliveryOrderFragment" >
+        <action
+            android:id="@+id/action_DeliveryOrderFragment_to_deliveryDetailFragment"
+            app:destination="@id/deliveryDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
         android:name="com.fpoly.sdeliverydriver.ui.main.profile.EditProfileFragment"
@@ -42,4 +46,8 @@
         android:id="@+id/changePasswordFragment"
         android:name="com.fpoly.sdeliverydriver.ui.main.profile.ChangePasswordFragment"
         android:label="ChangePasswordFragment" />
+    <fragment
+        android:id="@+id/deliveryDetailFragment"
+        android:name="com.fpoly.sdeliverydriver.ui.main.order.DeliveryDetailFragment"
+        android:label="DeliveryDetailFragment" />
 </navigation>

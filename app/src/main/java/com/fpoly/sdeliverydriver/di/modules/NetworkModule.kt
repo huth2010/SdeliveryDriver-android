@@ -5,6 +5,7 @@ import android.content.Context
 import com.fpoly.sdeliverydriver.data.network.AuthApi
 import com.fpoly.sdeliverydriver.data.network.ChatApi
 import com.fpoly.sdeliverydriver.data.network.ContentDataSource
+import com.fpoly.sdeliverydriver.data.network.DeliveryApi
 import com.fpoly.sdeliverydriver.data.network.OrderApi
 import com.fpoly.sdeliverydriver.data.network.PlacesApi
 import com.fpoly.sdeliverydriver.data.network.RemoteDataSource
@@ -13,6 +14,7 @@ import com.fpoly.sdeliverydriver.data.network.SocketManager
 import com.fpoly.sdeliverydriver.data.network.UserApi
 import com.fpoly.sdeliverydriver.data.repository.AuthRepository
 import com.fpoly.sdeliverydriver.data.repository.ChatRepository
+import com.fpoly.sdeliverydriver.data.repository.DeliveryRepository
 import com.fpoly.sdeliverydriver.data.repository.HomeRepository
 import com.fpoly.sdeliverydriver.data.repository.OrderRepository
 import com.fpoly.sdeliverydriver.data.repository.PlacesRepository
@@ -56,6 +58,16 @@ object NetworkModule {
     fun providerUserRepository(
         api: UserApi
     ): UserRepository = UserRepository(api)
+    @Provides
+    fun providerApiDelivery(
+        remoteDataSource: RemoteDataSource,
+        context: Context
+    ): DeliveryApi = remoteDataSource.buildApi(DeliveryApi::class.java, context)
+
+    @Provides
+    fun providerDeliveryRepository(
+        api: DeliveryApi
+    ): DeliveryRepository = DeliveryRepository(api)
 
     @Provides
     fun providerApiPlaces(
