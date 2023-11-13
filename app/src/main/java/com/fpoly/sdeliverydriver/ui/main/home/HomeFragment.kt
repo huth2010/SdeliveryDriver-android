@@ -1,13 +1,12 @@
 package com.fpoly.sdeliverydriver.ui.main.home
 
-
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.ActivityManager
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
@@ -19,7 +18,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.airbnb.mvrx.Fail
 import com.airbnb.mvrx.Success
 import com.airbnb.mvrx.activityViewModel
@@ -32,26 +30,33 @@ import com.fpoly.sdeliverydriver.data.model.UpdateStatusRequest
 import com.fpoly.sdeliverydriver.data.model.UserLocation
 import com.fpoly.sdeliverydriver.databinding.FragmentHomeBinding
 import com.fpoly.sdeliverydriver.ui.delivery.DeliveryActivity
-import com.fpoly.sdeliverydriver.ui.main.MainActivity
-import com.fpoly.sdeliverydriver.ui.main.order.OrderAdapter
+import com.fpoly.sdeliverydriver.ui.main.order.adapter.OrderAdapter
 import com.fpoly.sdeliverydriver.ui.main.profile.UserViewModel
 import com.fpoly.sdeliverydriver.ui.notification.LocationService
 import com.fpoly.sdeliverydriver.ultis.Constants
+import com.fpoly.sdeliverydriver.ultis.Constants.Companion.CONFIRMED_STATUS
+import com.fpoly.sdeliverydriver.ultis.Constants.Companion.DELIVERING_STATUS
+import com.fpoly.sdeliverydriver.ultis.Constants.Companion.collection_user_locations
 import com.fpoly.sdeliverydriver.ultis.checkRequestPermissions
-import com.fpoly.sdeliverydriver.ultis.showSnackbar
-import com.fpoly.sdeliverydriver.ultis.showUtilDialog
 import com.fpoly.sdeliverydriver.ultis.showUtilDialogWithCallback
-import com.fpoly.sdeliverydriver.ultis.startToDetailPermission
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
+import java.io.IOException
 import javax.inject.Inject
 
-class HomeFragment @Inject constructor() : PolyBaseFragment<FragmentHomeBinding>() {
+class HomeFragment @Inject constructor() : PolyBaseFragment<FragmentHomeBinding>(),
+    OnMapReadyCallback {
 
     private val homeViewModel: HomeViewModel by activityViewModel()
     private val userViewModel: UserViewModel by activityViewModel()
@@ -59,13 +64,11 @@ class HomeFragment @Inject constructor() : PolyBaseFragment<FragmentHomeBinding>
     private var adapter: OrderAdapter? = null
 
     companion object {
-        const val CONFIRMED_STATUS: String = "65264c102d9b3bb388078976"
-        const val DELIVERING_STATUS: String = "65264c672d9b3bb388078978"
-        const val collection_user_locations = "User Locations"
         const val TAG = "HomeFragment"
     }
 
     private lateinit var mDb: FirebaseFirestore
+    private lateinit var mGoogleMap: GoogleMap
     private var mFusedLocationProviderClient: FusedLocationProviderClient? = null
     private var mUserLocation: UserLocation? = null
     private var mLocationPermissionGranted = false
@@ -106,18 +109,6 @@ class HomeFragment @Inject constructor() : PolyBaseFragment<FragmentHomeBinding>
     private fun getLocationPermission() {
         checkRequestPermissions {
             mLocationPermissionGranted = it
-        }
-        if (!mLocationPermissionGranted) {
-            activity?.showUtilDialogWithCallback(
-                Notify(
-                    "Yêu cầu quyền",
-                    "bạn chưa cho phép quyền sử dụng vị trí",
-                    "Vào cài đặt để cấp quyền",
-                    R.raw.animation_successfully
-                )
-            ) {
-                activity?.startToDetailPermission()
-            }
         }
     }
 
@@ -209,21 +200,42 @@ class HomeFragment @Inject constructor() : PolyBaseFragment<FragmentHomeBinding>
         ) {
             return
         }
-        mFusedLocationProviderClient?.lastLocation?.addOnCompleteListener {
-            val location = it.result
-            val geoPoint = GeoPoint(location.latitude, location.longitude)
-            homeViewModel.handle(
-                HomeViewAction.GetCurrentLocation(
-                    location.latitude,
-                    location.longitude
-                )
-            )
-            mUserLocation?.apply {
-                this.geoPoint = geoPoint
-                this.timestamp = null
+
+        mFusedLocationProviderClient?.lastLocation?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val location = task.result
+                if (location != null) {
+                    val geoPoint = GeoPoint(location.latitude, location.longitude)
+                    homeViewModel.handle(
+                        HomeViewAction.GetCurrentLocation(
+                            location.latitude,
+                            location.longitude
+                        )
+                    )
+                    mUserLocation?.apply {
+                        this.geoPoint = geoPoint
+                        this.timestamp = null
+                    }
+                    handleGetAddressLocation()
+                    saveUserLocation()
+                    startLocationService()
+                } else {
+                    Log.e(TAG, "getLastKnowLocation: Last known location is null")
+                }
+            } else {
+                Log.e(TAG, "getLastKnowLocation: Failed to get last known location")
             }
-            saveUserLocation()
-            startLocationService()
+        }
+    }
+
+    @SuppressLint("SuspiciousIndentation")
+    private fun handleGetAddressLocation() {
+        if (mUserLocation != null) {
+            val latLng =
+                LatLng(mUserLocation!!.geoPoint!!.latitude, mUserLocation!!.geoPoint!!.longitude)
+            mGoogleMap.clear()
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
+            mGoogleMap.addMarker(MarkerOptions().position(latLng))
         }
     }
 
@@ -271,6 +283,9 @@ class HomeFragment @Inject constructor() : PolyBaseFragment<FragmentHomeBinding>
         mDb = FirebaseFirestore.getInstance()
         mFusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
+        val supportMapFragment =
+            childFragmentManager.findFragmentById(R.id.map_view_home) as SupportMapFragment?
+        supportMapFragment?.getMapAsync(this)
     }
 
     private fun init() {
@@ -373,6 +388,10 @@ class HomeFragment @Inject constructor() : PolyBaseFragment<FragmentHomeBinding>
 
             else -> {}
         }
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mGoogleMap = googleMap
     }
 
 }

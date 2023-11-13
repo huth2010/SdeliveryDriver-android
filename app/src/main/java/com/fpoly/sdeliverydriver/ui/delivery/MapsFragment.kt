@@ -1,12 +1,15 @@
 package com.fpoly.sdeliverydriver.ui.delivery
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.findNavController
 import com.airbnb.mvrx.Fail
 import com.airbnb.mvrx.Success
@@ -15,12 +18,13 @@ import com.airbnb.mvrx.withState
 import com.bumptech.glide.Glide
 import com.fpoly.sdeliverydriver.R
 import com.fpoly.sdeliverydriver.core.PolyBaseFragment
+import com.fpoly.sdeliverydriver.data.model.Notify
 import com.fpoly.sdeliverydriver.data.model.OrderResponse
 import com.fpoly.sdeliverydriver.databinding.FragmentMapsBinding
-import com.fpoly.sdeliverydriver.ui.main.home.HomeFragment.Companion.DELIVERING_STATUS
-import com.fpoly.sdeliverydriver.ui.main.home.HomeViewAction
-import com.fpoly.sdeliverydriver.ui.main.home.HomeViewModel
+import com.fpoly.sdeliverydriver.ultis.Constants.Companion.DELIVERING_STATUS
 import com.fpoly.sdeliverydriver.ultis.Constants.Companion.MAPVIEW_BUNDLE_KEY
+import com.fpoly.sdeliverydriver.ultis.showUtilDialogWithCallback
+import com.fpoly.sdeliverydriver.ultis.startToDetailPermission
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener
@@ -35,7 +39,7 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
     GoogleMap.OnPoiClickListener,
     GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapClickListener {
 
-    private val homeViewModel: HomeViewModel by activityViewModel()
+    private val deliveryViewModel: DeliveryViewModel by activityViewModel()
     private lateinit var googleMap: GoogleMap
     private val orderList = mutableListOf<OrderResponse>()
     private var mapFragment: SupportMapFragment? = null
@@ -61,7 +65,7 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
     }
 
     private fun initData() {
-        homeViewModel.handle(HomeViewAction.GetAllOrderByStatus(DELIVERING_STATUS))
+        deliveryViewModel.handle(DeliveryViewAction.GetAllOrderByStatus(DELIVERING_STATUS))
     }
 
     private fun listenEvent() {
@@ -81,6 +85,30 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
             outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle)
         }
         mapFragment?.onSaveInstanceState(mapViewBundle)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkPermissionRound2()
+    }
+
+    private fun checkPermissionRound2(){
+        if (ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            activity?.showUtilDialogWithCallback(
+                Notify(
+                    "Yêu cầu quyền",
+                    "bạn chưa cho phép quyền sử dụng vị trí",
+                    "Vào cài đặt để cấp quyền",
+                    R.raw.animation_successfully
+                )
+            ) {
+                activity?.startToDetailPermission()
+            }
+        }
     }
 
     override fun onStart() {
@@ -126,7 +154,7 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
         val selectedOrder = orderList.find { it.address.toLatLng() == markerPosition }
         if (selectedOrder != null) {
             setupOrderLayout(selectedOrder)
-            homeViewModel.handle(HomeViewAction.GetCurrentOrder(selectedOrder._id))
+            deliveryViewModel.handle(DeliveryViewAction.GetCurrentOrder(selectedOrder._id))
         }
     }
 
@@ -169,16 +197,21 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
     }
 
     private fun setupLocationCustomerMarkers(orders: List<OrderResponse>) {
+        googleMap.clear()
         for (order in orders) {
-            val orderLocation = order.address?.toLatLng()
-            if (orderLocation != null) {
-                val marker = MarkerOptions()
-                    .position(orderLocation)
-                    .title(order.address.recipientName)
-                googleMap.addMarker(marker)
-                orderList.add(order)
-            }
+            val orderLocation = order.address.toLatLng()
+            val marker = MarkerOptions()
+                .position(orderLocation)
+                .title(order.address.recipientName)
+            googleMap.addMarker(marker)
+            orderList.add(order)
         }
+    }
+
+    private fun handleSetAnimationCamera(latLng:LatLng) {
+        googleMap.clear()
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17F))
+        googleMap.addMarker(MarkerOptions().position(latLng))
     }
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentMapsBinding {
@@ -186,20 +219,28 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
     }
 
     override fun invalidate() {
-        withState(homeViewModel) {
+        withState(deliveryViewModel) {
             when (it.asyncDelivering) {
                 is Success -> {
+                    googleMap.clear()
                     val orders = it.asyncDelivering.invoke() ?: emptyList()
                     val firstOrderLocation = orders.firstOrNull()?.address?.toLatLng()
                     if (firstOrderLocation != null) {
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(firstOrderLocation, 17F))
-                        setupLocationCustomerMarkers(orders)
+                        handleSetAnimationCamera(firstOrderLocation)
                     }
+                    setupLocationCustomerMarkers(orders)
                 }
                 is Fail -> {
                 }
                 else -> {
                 }
+            }
+            when (it.asyncCreateDelivery) {
+                is Success -> {
+                    initData()
+                    deliveryViewModel.handleRemoveAsyncCreateDelivery()
+                }
+                else -> {}
             }
         }
     }

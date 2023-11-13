@@ -12,7 +12,6 @@ import javax.inject.Inject
 class OrderRepository @Inject constructor(
     private val api: OrderApi
 ) {
-    fun getOneSize(id: String): Observable<Size> = api.getOneSize(id).subscribeOn(Schedulers.io())
     fun getAllOrderByStatus(statusId: String): Observable<List<OrderResponse>> =
         api.getAllOrderByStatus(statusId).subscribeOn(Schedulers.io())
 

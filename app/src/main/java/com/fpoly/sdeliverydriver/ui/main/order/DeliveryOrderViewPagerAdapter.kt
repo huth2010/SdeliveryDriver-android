@@ -5,19 +5,18 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class OrderViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle)
+class DeliveryOrderViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle)
     : FragmentStateAdapter(fragmentManager, lifecycle) {
     override fun getItemCount(): Int {
-        return 3
+        return 2
     }
 
     override fun createFragment(position: Int): Fragment {
         when(position){
-            0 -> return CurrentOrdersFragment()
-            1 -> return ComfirmedFragment()
-            2 -> return HistoryOrderFragment()
+            0 -> return SuccessDeliveryOrdersFragment()
+            1 -> return CancelDeliveryOrdersFragment()
         }
-        return CurrentOrdersFragment();
+        return SuccessDeliveryOrdersFragment();
     }
 
 }
