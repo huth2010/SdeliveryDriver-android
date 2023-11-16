@@ -30,6 +30,7 @@ import com.fpoly.sdeliverydriver.data.model.OrderResponse
 import com.fpoly.sdeliverydriver.databinding.FragmentConfirmDeliveryBinding
 import com.fpoly.sdeliverydriver.ultis.Constants.Companion.SUCCESS_STATUS
 import com.fpoly.sdeliverydriver.ultis.checkPermissionGallery
+import com.fpoly.sdeliverydriver.ultis.showPermissionDeniedToast
 import com.fpoly.sdeliverydriver.ultis.showSnackbar
 import com.fpoly.sdeliverydriver.ultis.showUtilDialog
 import com.fpoly.sdeliverydriver.ultis.startToDetailPermission
@@ -87,17 +88,6 @@ class ConfirmDeliveryFragment : PolyBaseFragment<FragmentConfirmDeliveryBinding>
         }
     }
 
-    private fun showPermissionDeniedToast() {
-        showSnackbar(
-            requireView(),
-            "Camera permission denied, please allow permission",
-            false,
-            ""
-        ) {
-            activity?.startToDetailPermission()
-        }
-    }
-
     private fun showCapturedImage() {
         views.choosePhoto.setImageURI(null)
         views.choosePhoto.setImageURI(currentPhotoUri)
@@ -134,10 +124,7 @@ class ConfirmDeliveryFragment : PolyBaseFragment<FragmentConfirmDeliveryBinding>
     private fun selectImageFromGallery() {
         checkPermissionGallery { isAllowed ->
             if (isAllowed) {
-                val intent = Intent().apply {
-                    type = "image/*"
-                    action = Intent.ACTION_GET_CONTENT
-                }
+                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 resultLauncher.launch(intent)
             } else {
                 showPermissionDeniedToast()
@@ -145,16 +132,13 @@ class ConfirmDeliveryFragment : PolyBaseFragment<FragmentConfirmDeliveryBinding>
         }
     }
 
-    private val resultLauncher = registerForActivityResult<Intent, ActivityResult>(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result != null) {
-            val intent = result.data
-            if (intent?.data != null && result.resultCode == Activity.RESULT_OK) {
-                handleGalleryImageSelection(intent.data!!)
-            }
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+            val selectedImageUri: Uri? = result.data?.data
+            selectedImageUri?.let { handleGalleryImageSelection(it) }
         }
     }
+
 
     private fun handleGalleryImageSelection(selectedImageUri: Uri) {
         currentPhotoUri = selectedImageUri
