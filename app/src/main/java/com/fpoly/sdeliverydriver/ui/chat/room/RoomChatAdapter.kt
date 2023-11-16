@@ -11,6 +11,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.fpoly.sdeliverydriver.R
 import com.fpoly.sdeliverydriver.data.model.Message
 import com.fpoly.sdeliverydriver.data.model.MessageType
+import com.fpoly.sdeliverydriver.data.model.Room
 import com.fpoly.sdeliverydriver.data.model.User
 import com.fpoly.sdeliverydriver.databinding.ItemChatErrorBinding
 import com.fpoly.sdeliverydriver.databinding.ItemChatMeBinding
@@ -20,7 +21,6 @@ import com.fpoly.sdeliverydriver.ultis.convertToStringFormat
 
 @SuppressLint("SetTextI18n")
 class RoomChatAdapter(
-    private val myUser: User,
     private val onCallBack: IOnClickLisstenner
 ) : RecyclerView.Adapter<RoomChatAdapter.ViewHolder>() {
 
@@ -34,9 +34,16 @@ class RoomChatAdapter(
         const val TYPE_YOU = 1
     }
 
+    var currentRoom: Room? = null
     var messages: ArrayList<Message> = ArrayList()
 
-    fun setData(data: ArrayList<Message>?){
+    fun setDataRoom(data: Room?){
+        if (data == null) return
+        currentRoom = data
+        notifyDataSetChanged()
+    }
+
+    fun setDataMessage(data: ArrayList<Message>?){
         if (data.isNullOrEmpty()) return
         messages = data
         notifyDataSetChanged()
@@ -67,7 +74,7 @@ class RoomChatAdapter(
 
 
     override fun getItemViewType(position: Int): Int {
-        return if (messages[position].userIdSend?._id == myUser._id) TYPE_ME else TYPE_YOU
+        return if (messages[position].userIdSend?._id == currentRoom!!.userUserId!!._id) TYPE_ME else TYPE_YOU
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -76,7 +83,8 @@ class RoomChatAdapter(
     }
 
     override fun getItemCount(): Int {
-        return messages.size
+        if (currentRoom != null) return messages.size
+        return 0
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -92,7 +100,9 @@ class RoomChatAdapter(
         if (message.type == MessageType.TYPE_IMAGE && !message.images.isNullOrEmpty()){
             binding.tvMessage.isVisible = false
             binding.imgMassage.isVisible = true
+
             Glide.with(binding.root.context)
+                .asBitmap()
                 .load(message.images[0].url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.mipmap.ic_launcher)
@@ -105,6 +115,7 @@ class RoomChatAdapter(
             }else binding.tvCountImages.isVisible = false
         }else{
             binding.imgMassage.isVisible = false
+            binding.imgMassage.setImageResource(0)
             binding.tvMessage.isVisible = true
             binding.tvCountImages.isVisible = false
             binding.tvMessage.text = message.message
@@ -122,9 +133,11 @@ class RoomChatAdapter(
     private fun handChatYou(binding: ItemChatYouBinding, message: Message, position: Int) {
         if ( position + 1 < messages.size && messages[position].userIdSend?._id == messages[position + 1].userIdSend?._id){
             binding.imgAvatar.isVisible = false
+            binding.imgAvatar.setImageResource(0)
         }else{
             binding.imgAvatar.isVisible = true
             binding.imgAvatar.setImageResource(R.mipmap.ic_launcher)
+            Glide.with(binding.root.context).load(message.userIdSend?.avatar?.url).placeholder(R.mipmap.ic_launcher).into(binding.imgAvatar)
         }
 
         binding.tvTime.text = message.time?.convertToStringFormat(StringUltis.dateIso8601Format, StringUltis.dateTimeHourFormat)
@@ -144,6 +157,7 @@ class RoomChatAdapter(
             }else binding.tvCountImages.isVisible = false
         }else{
             binding.imgMassage.isVisible = false
+            binding.imgMassage.setImageResource(0)
             binding.tvMessage.isVisible = true
             binding.tvCountImages.isVisible = false
             binding.tvMessage.text = message.message

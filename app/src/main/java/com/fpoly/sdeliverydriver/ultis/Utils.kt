@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -125,4 +126,12 @@ fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
     val path =
         MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)
     return Uri.parse(path)
+}
+
+fun View.setMargins(left: Int, top: Int, right: Int, bottom: Int){
+    if (this.layoutParams is ViewGroup.MarginLayoutParams) {
+        val marginLayoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
+        marginLayoutParams.setMargins(left, top, right, bottom)
+        this.requestLayout()
+    }
 }
