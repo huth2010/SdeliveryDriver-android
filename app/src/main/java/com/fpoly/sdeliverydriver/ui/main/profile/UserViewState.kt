@@ -8,6 +8,7 @@ import com.fpoly.sdeliverydriver.data.model.TokenResponse
 import com.fpoly.sdeliverydriver.data.model.User
 
 data class UserViewState(
+    var asyncLogout: Async<User> = Uninitialized,
     var asyncCurrentUser: Async<User> = Uninitialized,
     var asyncUserSearching: Async<User> = Uninitialized,
     var asyncUpdateUser: Async<User> = Uninitialized,

@@ -2,6 +2,7 @@ package com.fpoly.sdeliverydriver.ui.delivery
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -20,9 +21,11 @@ import com.fpoly.sdeliverydriver.core.PolyBaseFragment
 import com.fpoly.sdeliverydriver.data.model.Notify
 import com.fpoly.sdeliverydriver.data.model.OrderResponse
 import com.fpoly.sdeliverydriver.databinding.FragmentMapsBinding
+import com.fpoly.sdeliverydriver.ui.chat.ChatActivity
 import com.fpoly.sdeliverydriver.ultis.Constants.Companion.DELIVERING_STATUS
 import com.fpoly.sdeliverydriver.ultis.Constants.Companion.MAPVIEW_BUNDLE_KEY
 import com.fpoly.sdeliverydriver.ultis.showSnackbar
+import com.fpoly.sdeliverydriver.ultis.MyConfigNotifi
 import com.fpoly.sdeliverydriver.ultis.showUtilDialogWithCallback
 import com.fpoly.sdeliverydriver.ultis.startToDetailPermission
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -173,6 +176,17 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
             recipientName.text = selectedOrder.address.recipientName
             phone.text = selectedOrder.address.phoneNumber
             address.text = selectedOrder.address.addressLine
+
+            btnChat.setOnClickListener{
+                val intent = Intent(requireContext(), ChatActivity::class.java).apply {
+                    putExtras(Bundle().apply {
+                        putString("type", MyConfigNotifi.TYPE_CHAT)
+                        putString("idUrl", selectedOrder.userId._id) }
+                    )
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                startActivity(intent)
+            }
         }
     }
 

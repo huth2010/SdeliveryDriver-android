@@ -9,7 +9,9 @@ import com.fpoly.sdeliverydriver.PolyApplication
 import com.fpoly.sdeliverydriver.core.PolyBaseActivity
 import com.fpoly.sdeliverydriver.data.network.SessionManager
 import com.fpoly.sdeliverydriver.databinding.ActivitySplashScreenBinding
+import com.fpoly.sdeliverydriver.ui.chat.ChatActivity
 import com.fpoly.sdeliverydriver.ui.main.MainActivity
+import com.fpoly.sdeliverydriver.ultis.MyConfigNotifi
 import com.fpoly.sdeliverydriver.ultis.changeLanguage
 import com.fpoly.sdeliverydriver.ultis.changeMode
 import com.fpoly.sdeliverydriver.ultis.handleLogOut
@@ -38,8 +40,7 @@ class SplashScreenActivity : PolyBaseActivity<ActivitySplashScreenBinding>(),Sec
     private fun handleStateChange(it: SecurityViewState) {
         when (it.asyncUserCurrent) {
             is Success -> {
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
+                startActivityWithFCMReciveDataNotifi()
             }
 
             is Fail -> {
@@ -51,6 +52,39 @@ class SplashScreenActivity : PolyBaseActivity<ActivitySplashScreenBinding>(),Sec
             else -> {}
         }
     }
+
+    private fun startActivityWithFCMReciveDataNotifi() {
+        val type = intent.extras?.getString("type")
+        val idUrl = intent.extras?.getString("idUrl")
+
+        when(type){
+            MyConfigNotifi.TYPE_ALL ->{
+
+            }
+            MyConfigNotifi.TYPE_CHAT ->{
+                startMainActivityToBackStack()
+                val intent = Intent(this, ChatActivity::class.java).apply {
+                    putExtras(Bundle().apply {
+                        putString("type", type)
+                        putString("idUrl", idUrl) }
+                    )
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                startActivity(intent)
+            }
+            else ->{
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+        }
+        finishAffinity()
+    }
+
+    fun startMainActivityToBackStack(){
+        var intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+        startActivity(intent)
+    }
+
 
     private fun configData() {
         sessionManager.fetchDarkMode().let { changeMode(it) }

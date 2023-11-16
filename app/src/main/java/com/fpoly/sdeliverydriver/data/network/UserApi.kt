@@ -37,4 +37,6 @@ interface UserApi {
     fun deleteAddress(@Path("id") id: String):Observable<Address>
     @GET("api/addresses/{id}")
     fun getAddressById(@Path("id") id: String):Observable<Address>
+    @POST("api/logout/mobile")
+    fun logoutUser():Observable<User>
 }

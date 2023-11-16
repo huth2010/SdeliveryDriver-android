@@ -8,8 +8,10 @@ import com.airbnb.mvrx.Uninitialized
 import com.airbnb.mvrx.ViewModelContext
 import com.fpoly.sdeliverydriver.core.PolyBaseViewModel
 import com.fpoly.sdeliverydriver.data.model.DeliveryOrder
+import com.fpoly.sdeliverydriver.data.model.TokenDevice
 import com.fpoly.sdeliverydriver.data.model.UpdateStatusRequest
 import com.fpoly.sdeliverydriver.data.model.UserLocation
+import com.fpoly.sdeliverydriver.data.repository.AuthRepository
 import com.fpoly.sdeliverydriver.data.repository.DeliveryRepository
 import com.fpoly.sdeliverydriver.data.repository.OrderRepository
 import com.fpoly.sdeliverydriver.data.repository.PlacesRepository
@@ -23,7 +25,8 @@ import dagger.assisted.AssistedInject
 
 class HomeViewModel @AssistedInject constructor(
     @Assisted state: HomeViewState,
-    private val repository: OrderRepository,
+    private val authRepository: AuthRepository,
+    private val orderRepository: OrderRepository,
     private val placesRepository: PlacesRepository,
     private val deliveryOrderRepository: DeliveryRepository
 ) : PolyBaseViewModel<HomeViewState, HomeViewAction, HomeViewEvent>(state) {
@@ -33,6 +36,12 @@ class HomeViewModel @AssistedInject constructor(
         handleGetAllOrderByStatus(DELIVERING_STATUS)
         handleGetAllDeliveryOrders(SUCCESS_STATUS)
         handleGetAllDeliveryOrders(CANCEL_STATUS)
+
+        authRepository.getTokenDevice{
+            authRepository.addTokenDevice(TokenDevice(it)).execute {
+                copy()
+            }
+        }
     }
 
     override fun handle(action: HomeViewAction) {
@@ -78,7 +87,7 @@ class HomeViewModel @AssistedInject constructor(
 
     private fun handleGetCurrentOrder(id: String) {
         setState { copy(asyncGetCurrentOrder = Loading()) }
-        repository.getCurrentOrder(id)
+        orderRepository.getCurrentOrder(id)
             .execute {
                 copy(asyncGetCurrentOrder = it)
             }
@@ -86,7 +95,7 @@ class HomeViewModel @AssistedInject constructor(
 
     private fun handleUpdateOrderStatus(id: String, shipperId: String,statusRequest: UpdateStatusRequest) {
         setState { copy(asyncUpdateOrderStatus = Loading()) }
-        repository.updateOrderStatus(id, shipperId ,statusRequest)
+        orderRepository.updateOrderStatus(id, shipperId ,statusRequest)
             .execute {
                 copy(asyncUpdateOrderStatus = it)
             }
@@ -96,7 +105,7 @@ class HomeViewModel @AssistedInject constructor(
         when (statusId) {
             CONFIRMED_STATUS -> {
                 setState { copy(asyncConfirmed = Loading()) }
-                repository.getAllOrderByStatus(statusId)
+                orderRepository.getAllOrderByStatus(statusId)
                     .execute {
                         copy(asyncConfirmed = it)
                     }
@@ -104,7 +113,7 @@ class HomeViewModel @AssistedInject constructor(
 
             DELIVERING_STATUS -> {
                 setState { copy(asyncDelivering = Loading()) }
-                repository.getAllOrderByShipper(statusId)
+                orderRepository.getAllOrderByShipper(statusId)
                     .execute {
                         copy(asyncDelivering = it)
                     }
