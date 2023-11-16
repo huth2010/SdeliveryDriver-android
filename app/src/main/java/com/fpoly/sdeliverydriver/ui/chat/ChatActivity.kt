@@ -15,6 +15,7 @@ import com.fpoly.sdeliverydriver.data.model.RequireCall
 import com.fpoly.sdeliverydriver.data.model.RequireCallType
 import com.fpoly.sdeliverydriver.databinding.ActivityChatBinding
 import com.fpoly.sdeliverydriver.ui.chat.call.MyPeerConnectionObserver
+import com.fpoly.sdeliverydriver.ultis.MyConfigNotifi
 import com.google.gson.Gson
 import org.webrtc.IceCandidate
 import org.webrtc.MediaStream
@@ -37,7 +38,7 @@ class ChatActivity : PolyBaseActivity<ActivityChatBinding>(), ChatViewmodel.Fact
         initUI()
         lisstenClickUI()
         handleViewMolde()
-
+        handleReciveDataNotifi()
     }
     private fun initUI() {
         navController= findNavController(R.id.nav_fragment)
@@ -61,6 +62,17 @@ class ChatActivity : PolyBaseActivity<ActivityChatBinding>(), ChatViewmodel.Fact
                 chatViewmodel.addViewToViewWebRTC(p0)
             }
         })
+    }
+
+    private fun handleReciveDataNotifi() {
+        val type = intent.extras?.getString("type")
+        val userId = intent.extras?.getString("idUrl")
+        when(type){
+            MyConfigNotifi.TYPE_CHAT ->{
+                navController.navigate(R.id.roomChatFragment)
+                chatViewmodel.handle(ChatViewAction.findRoomSearch(userId))
+            }
+        }
     }
 
     private fun lisstenClickUI() {

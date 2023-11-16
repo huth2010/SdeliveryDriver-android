@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.navigation.fragment.findNavController
+import com.airbnb.mvrx.Fail
+import com.airbnb.mvrx.Success
 import com.airbnb.mvrx.activityViewModel
 import com.airbnb.mvrx.withState
 import com.bumptech.glide.Glide
@@ -80,7 +82,7 @@ class ProfileFragment : PolyBaseFragment<FragmentProfileBinding>() {
         }
 
         views.logout.setOnClickListener {
-            activity?.handleLogOut()
+            userViewModel.handle(UserViewAction.LogOutUser)
         }
     }
 
@@ -90,6 +92,16 @@ class ProfileFragment : PolyBaseFragment<FragmentProfileBinding>() {
     ): FragmentProfileBinding = FragmentProfileBinding.inflate(layoutInflater)
 
     override fun invalidate() {
-
+        withState(userViewModel){
+            when(it.asyncLogout){
+                is Success ->{
+                    activity?.handleLogOut()
+                }
+                is Fail ->{
+                    activity?.handleLogOut()
+                }
+                else -> { }
+            }
+        }
     }
 }

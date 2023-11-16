@@ -72,12 +72,14 @@ class SecurityViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleLogin(userName:String,password: String){
-        setState {
-            copy(asyncLogin= Loading())
-        }
-        repository.login(userName,password).execute {
-            copy(asyncLogin=it)
+    private fun handleLogin(userName:String, password: String){
+        withState {
+            setState {
+                copy(asyncLogin= Loading())
+            }
+            repository.login(userName,password).execute {
+                copy(asyncLogin=it)
+            }
         }
     }
 

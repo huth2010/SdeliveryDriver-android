@@ -3,6 +3,7 @@ package com.fpoly.sdeliverydriver.data.network
 import com.fpoly.sdeliverydriver.data.model.Data
 import com.fpoly.sdeliverydriver.data.model.LoginRequest
 import com.fpoly.sdeliverydriver.data.model.ResetPasswordRequest
+import com.fpoly.sdeliverydriver.data.model.TokenDevice
 import com.fpoly.sdeliverydriver.data.model.TokenResponse
 import com.fpoly.sdeliverydriver.data.model.User
 import com.fpoly.sdeliverydriver.data.model.UserRequest
@@ -34,4 +35,6 @@ interface AuthApi {
     fun getUserById(@Path("id") id: String):Observable<User>
     @GET("api/users/search/{text}")
     fun searchUserByName(@Path("text") text: String):Observable<ArrayList<User>>
+    @POST("api/update/tokendevice")
+    fun updateTokenDevice(@Body tokenDevice: TokenDevice):Observable<User>
 }

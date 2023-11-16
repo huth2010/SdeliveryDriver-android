@@ -1,6 +1,7 @@
 package com.fpoly.sdeliverydriver.ui.chat
 
 import com.fpoly.sdeliverydriver.core.PolyViewAction
+import com.fpoly.sdeliverydriver.data.model.Gallery
 import com.fpoly.sdeliverydriver.data.model.Message
 import com.fpoly.sdeliverydriver.data.model.Room
 import com.fpoly.sdeliverydriver.data.model.User
@@ -12,10 +13,10 @@ sealed class ChatViewAction : PolyViewAction{
     object getRoomChat : ChatViewAction()
 
     data class setCurrentUserChat(val user: User): ChatViewAction()
-    data class setCurrentChat(val room: Room): ChatViewAction()
+    data class setCurrentChat(val roomId: String?): ChatViewAction()
     object removeCurrentChat: ChatViewAction()
 
-    data class postMessage(val message: Message, val files: List<File>?): ChatViewAction()
+    data class postMessage(val message: Message, val images: List<Gallery>?): ChatViewAction()
     object removePostMessage: ChatViewAction()
 
     object returnConnectSocket: ChatViewAction()
@@ -25,5 +26,5 @@ sealed class ChatViewAction : PolyViewAction{
     object getDataGallery: ChatViewAction()
 
     data class searchUserByName(val text: String): ChatViewAction()
-    data class findRoomSearch(val user: User): ChatViewAction()
+    data class findRoomSearch(val userId: String?): ChatViewAction()
 }
