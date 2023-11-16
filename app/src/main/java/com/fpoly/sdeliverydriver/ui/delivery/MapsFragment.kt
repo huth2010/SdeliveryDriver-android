@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.findNavController
 import com.airbnb.mvrx.Fail
@@ -25,12 +24,14 @@ import com.fpoly.sdeliverydriver.databinding.FragmentMapsBinding
 import com.fpoly.sdeliverydriver.ui.chat.ChatActivity
 import com.fpoly.sdeliverydriver.ultis.Constants.Companion.DELIVERING_STATUS
 import com.fpoly.sdeliverydriver.ultis.Constants.Companion.MAPVIEW_BUNDLE_KEY
+import com.fpoly.sdeliverydriver.ultis.showSnackbar
 import com.fpoly.sdeliverydriver.ultis.MyConfigNotifi
 import com.fpoly.sdeliverydriver.ultis.showUtilDialogWithCallback
 import com.fpoly.sdeliverydriver.ultis.startToDetailPermission
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -40,12 +41,16 @@ import com.google.android.gms.maps.model.PointOfInterest
 
 class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback,
     GoogleMap.OnPoiClickListener,
-    GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapClickListener {
+    GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener,
+    OnMapClickListener, OnMarkerClickListener {
 
     private val deliveryViewModel: DeliveryViewModel by activityViewModel()
     private lateinit var googleMap: GoogleMap
     private val orderList = mutableListOf<OrderResponse>()
     private var mapFragment: SupportMapFragment? = null
+    private val markerList = mutableListOf<Marker>()
+    private var selectedOrder: OrderResponse? = null
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -76,7 +81,8 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
             activity?.finish()
         }
         views.btnDetailOrder.setOnClickListener {
-        findNavController().navigate(R.id.action_mapsFragment_to_deliveryOrderDetailFragment)
+            deliveryViewModel.handle(DeliveryViewAction.GetCurrentOrder(selectedOrder!!._id))
+            findNavController().navigate(R.id.action_mapsFragment_to_deliveryOrderDetailFragment)
         }
     }
 
@@ -95,7 +101,7 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
         checkPermissionRound2()
     }
 
-    private fun checkPermissionRound2(){
+    private fun checkPermissionRound2() {
         if (ActivityCompat.checkSelfPermission(
                 requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -146,20 +152,18 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
         googleMap.setOnMyLocationButtonClickListener(this)
         googleMap.setOnMyLocationClickListener(this)
         googleMap.setOnMapClickListener(this)
-        googleMap.setOnMarkerClickListener { marker ->
-            handleMarkerClick(marker)
-            false
-        }
+        googleMap.setOnMarkerClickListener(this)
     }
 
     private fun handleMarkerClick(marker: Marker) {
         val markerPosition = marker.position
-        val selectedOrder = orderList.find { it.address.toLatLng() == markerPosition }
+        selectedOrder = orderList.find { it.address.toLatLng() == markerPosition }
         if (selectedOrder != null) {
-            setupOrderLayout(selectedOrder)
-            deliveryViewModel.handle(DeliveryViewAction.GetCurrentOrder(selectedOrder._id))
+            setupOrderLayout(selectedOrder!!)
+            handleSetAnimationCamera(markerPosition)
         }
     }
+
 
     private fun setupOrderLayout(selectedOrder: OrderResponse) {
         views.apply {
@@ -187,46 +191,55 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
     }
 
     override fun onPoiClick(poi: PointOfInterest) {
-        Toast.makeText(
-            requireContext(), """Clicked: ${poi.name}
+        showSnackbar(requireView(), """Clicked: ${poi.name}
             Place ID:${poi.placeId}
-            Latitude:${poi.latLng.latitude} Longitude:${poi.latLng.longitude}""",
-            Toast.LENGTH_SHORT
-        ).show()
+            Latitude:${poi.latLng.latitude} Longitude:${poi.latLng.longitude}""", true, null
+        ) {}
+
     }
 
     override fun onMyLocationButtonClick(): Boolean {
-        Toast.makeText(requireContext(), "MyLocation button clicked", Toast.LENGTH_SHORT)
-            .show()
-        return false
+        showSnackbar(requireView(), "Moving to your location", true, null) {}
+        return true
     }
 
     override fun onMyLocationClick(location: Location) {
-        Toast.makeText(requireContext(), "Current location:\n$location", Toast.LENGTH_LONG)
-            .show()
+        showSnackbar(requireView(), "Current location:\n$location", true, null) {}
     }
 
     override fun onMapClick(p0: LatLng) {
         views.layoutAddress.visibility = View.GONE
     }
 
+    override fun onMarkerClick(marker: Marker): Boolean {
+        handleMarkerClick(marker)
+        return false
+    }
+
+
     private fun setupLocationCustomerMarkers(orders: List<OrderResponse>) {
-        googleMap.clear()
+        markerList.forEach { it.remove() }
+        markerList.clear()
+
         for (order in orders) {
             val orderLocation = order.address.toLatLng()
-            val marker = MarkerOptions()
-                .position(orderLocation)
-                .title(order.address.recipientName)
-            googleMap.addMarker(marker)
+            val marker = googleMap.addMarker(
+                MarkerOptions()
+                    .position(orderLocation)
+                    .title(order.address.recipientName)
+            )
+            if (marker != null) {
+                markerList.add(marker)
+            }
             orderList.add(order)
         }
     }
 
-    private fun handleSetAnimationCamera(latLng:LatLng) {
-        googleMap.clear()
+
+    private fun handleSetAnimationCamera(latLng: LatLng) {
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17F))
-        googleMap.addMarker(MarkerOptions().position(latLng))
     }
+
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentMapsBinding {
         return FragmentMapsBinding.inflate(inflater, container, false)
@@ -236,16 +249,19 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
         withState(deliveryViewModel) {
             when (it.asyncDelivering) {
                 is Success -> {
-                    googleMap.clear()
                     val orders = it.asyncDelivering.invoke() ?: emptyList()
                     val firstOrderLocation = orders.firstOrNull()?.address?.toLatLng()
                     if (firstOrderLocation != null) {
-                        handleSetAnimationCamera(firstOrderLocation)
+                        if (markerList.isEmpty()) {
+                            handleSetAnimationCamera(firstOrderLocation)
+                        }
                     }
                     setupLocationCustomerMarkers(orders)
                 }
+
                 is Fail -> {
                 }
+
                 else -> {
                 }
             }
@@ -254,8 +270,10 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
                     initData()
                     deliveryViewModel.handleRemoveAsyncCreateDelivery()
                 }
+
                 else -> {}
             }
         }
     }
+
 }
