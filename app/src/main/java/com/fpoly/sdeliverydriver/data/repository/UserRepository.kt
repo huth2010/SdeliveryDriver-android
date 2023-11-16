@@ -37,4 +37,6 @@ class UserRepository(
         api.deleteAddress(id).subscribeOn(Schedulers.io())
     fun getAddressById(id: String): Observable<Address> =
         api.getAddressById(id).subscribeOn(Schedulers.io())
+
+    fun logout(): Observable<User> =  api.logoutUser().subscribeOn(Schedulers.io())
 }

@@ -11,6 +11,7 @@ import com.airbnb.mvrx.Uninitialized
 import com.airbnb.mvrx.ViewModelContext
 import com.fpoly.sdeliverydriver.core.PolyBaseViewModel
 import com.fpoly.sdeliverydriver.core.example.ChatViewState
+import com.fpoly.sdeliverydriver.data.model.Gallery
 import com.fpoly.sdeliverydriver.data.model.Message
 import com.fpoly.sdeliverydriver.data.model.RequireCall
 import com.fpoly.sdeliverydriver.data.model.RequireCallType
@@ -46,10 +47,10 @@ class ChatViewmodel @AssistedInject constructor(
             is ChatViewAction.getCurentUser -> getCurentUser()
             is ChatViewAction.getRoomChat -> getRoomChat()
 
-            is ChatViewAction.setCurrentChat -> setCurentChat(action.room)
+            is ChatViewAction.setCurrentChat -> setCurentChat(action.roomId)
             is ChatViewAction.removeCurrentChat -> removeCurentChat()
 
-            is ChatViewAction.postMessage -> postMessage(action.message, action.files)
+            is ChatViewAction.postMessage -> postMessage(action.message, action.images)
             is ChatViewAction.removePostMessage -> removePostMessage()
             is ChatViewAction.returnOffEventMessageSocket -> repo.offReceiveMessage(action.roomId)
             is ChatViewAction.returnConnectSocket -> repo.connectSocket()
@@ -58,7 +59,7 @@ class ChatViewmodel @AssistedInject constructor(
             is ChatViewAction.getDataGallery -> getDataGallery()
 
             is ChatViewAction.searchUserByName -> searchUerByName(action.text)
-            is ChatViewAction.findRoomSearch -> findRoomSearch(action.user)
+            is ChatViewAction.findRoomSearch -> findRoomSearch(action.userId)
             else -> {}
         }
     }
@@ -81,23 +82,23 @@ class ChatViewmodel @AssistedInject constructor(
     }
 
     // setup thông tin phòng
-    private fun setCurentChat(room: Room) {
-        if (room._id == null){
+    private fun setCurentChat(roomId: String?) {
+        if (roomId == null){
             setState { copy(curentRoom = Fail(Throwable()), curentMessage = Fail(Throwable())) }
             return
         }
 
         setState {copy(curentRoom = Loading(), curentMessage = Loading()) }
 
-        repo.getRoomById(room._id).execute{
+        repo.getRoomById(roomId).execute{
             copy(curentRoom = it)
         }
 
-        repo.getMessage(room._id).execute{
+        repo.getMessage(roomId).execute{
             copy(curentMessage = it)
         }
 
-        repo.onReceiveMessage(room._id){
+        repo.onReceiveMessage(roomId){
             if (it != null){
                 setState { copy(newMessage = Success(it)) }
             }else{
@@ -111,9 +112,9 @@ class ChatViewmodel @AssistedInject constructor(
     }
 
     // post message
-    private fun postMessage(message: Message, files: List<File>?) {
+    private fun postMessage(message: Message, images: List<Gallery>?) {
         setState { copy(messageSent = Loading()) }
-        repo.postMessage(message, files).execute{
+        repo.postMessage(message, images).execute{
             copy(messageSent = it)
         }
     }
@@ -149,12 +150,13 @@ class ChatViewmodel @AssistedInject constructor(
         }
     }
 
-    private fun findRoomSearch(user: User){
-        repo.getRoomWithUserId(user._id).execute {
-            Log.e("ChatViewModel", "findRoomSearch: room : ${it.invoke()}", )
-            if (it.invoke()?._id != null){
-                setCurentChat(it.invoke()!!)
-            }
+    private fun findRoomSearch(userId: String?){
+        if (userId == null){
+            setState { copy(curentRoom = Fail(Throwable()), curentMessage = Fail(Throwable())) }
+            return
+        }
+        repo.getRoomWithUserId(userId).execute {
+            setCurentChat(it.invoke()?._id)
             copy()
         }
     }
