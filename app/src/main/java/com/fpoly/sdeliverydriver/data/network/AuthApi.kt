@@ -19,7 +19,7 @@ import retrofit2.http.Query
 interface AuthApi {
 //    @POST("oauth/token")
 //    fun loginWithRefreshToken(@Body credentials: UserCredentials): Call<TokenResponse>
-    @POST("api/signin")
+    @POST("api/signinDeliveryApp")
     fun login(@Body user: LoginRequest): Observable<TokenResponse>
     @POST("api/verifyOTPChangePassword")
     fun verifyOTPChangePassword(@Body verifyOTP: VerifyOTPRequest):Observable<User>
