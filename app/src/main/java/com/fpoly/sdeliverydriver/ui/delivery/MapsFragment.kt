@@ -148,6 +148,7 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
     @SuppressLint("PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
+        googleMap.uiSettings.isMyLocationButtonEnabled = true
         googleMap.setOnPoiClickListener(this)
         googleMap.setOnMyLocationButtonClickListener(this)
         googleMap.setOnMyLocationClickListener(this)
@@ -200,7 +201,7 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
 
     override fun onMyLocationButtonClick(): Boolean {
         showSnackbar(requireView(), "Moving to your location", true, null) {}
-        return true
+        return false
     }
 
     override fun onMyLocationClick(location: Location) {
@@ -220,7 +221,12 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
     private fun setupLocationCustomerMarkers(orders: List<OrderResponse>) {
         markerList.forEach { it.remove() }
         markerList.clear()
-
+        val firstOrderLocation = orders.firstOrNull()?.address?.toLatLng()
+        if (firstOrderLocation != null) {
+            if (markerList.isEmpty()) {
+                handleSetAnimationCamera(firstOrderLocation)
+            }
+        }
         for (order in orders) {
             val orderLocation = order.address.toLatLng()
             val marker = googleMap.addMarker(
@@ -250,12 +256,6 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
             when (it.asyncDelivering) {
                 is Success -> {
                     val orders = it.asyncDelivering.invoke() ?: emptyList()
-                    val firstOrderLocation = orders.firstOrNull()?.address?.toLatLng()
-                    if (firstOrderLocation != null) {
-                        if (markerList.isEmpty()) {
-                            handleSetAnimationCamera(firstOrderLocation)
-                        }
-                    }
                     setupLocationCustomerMarkers(orders)
                 }
 
