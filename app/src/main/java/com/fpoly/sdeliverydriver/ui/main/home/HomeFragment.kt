@@ -38,6 +38,7 @@ import com.fpoly.sdeliverydriver.ultis.Constants.Companion.CONFIRMED_STATUS
 import com.fpoly.sdeliverydriver.ultis.Constants.Companion.DELIVERING_STATUS
 import com.fpoly.sdeliverydriver.ultis.Constants.Companion.collection_user_locations
 import com.fpoly.sdeliverydriver.ultis.checkRequestPermissions
+import com.fpoly.sdeliverydriver.ultis.showSnackbar
 import com.fpoly.sdeliverydriver.ultis.showUtilDialogWithCallback
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -75,7 +76,7 @@ class HomeFragment @Inject constructor() : PolyBaseFragment<FragmentHomeBinding>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        init()
+        initData()
         setupLocation()
         listenEvent()
         checkGoogleServicesAndGPS()
@@ -288,15 +289,14 @@ class HomeFragment @Inject constructor() : PolyBaseFragment<FragmentHomeBinding>
         supportMapFragment?.getMapAsync(this)
     }
 
-    private fun init() {
+    private fun initData() {
         homeViewModel.handle(HomeViewAction.GetAllOrderByStatus(CONFIRMED_STATUS))
         homeViewModel.handle(HomeViewAction.GetAllOrderByStatus(DELIVERING_STATUS))
     }
 
     private fun listenEvent() {
         views.swipeLoading.setOnRefreshListener {
-            homeViewModel.handle(HomeViewAction.GetAllOrderByStatus(CONFIRMED_STATUS))
-            homeViewModel.handle(HomeViewAction.GetAllOrderByStatus(DELIVERING_STATUS))
+            initData()
         }
         views.btnDelivery.setOnClickListener {
             activity?.startActivity(Intent(requireContext(), DeliveryActivity::class.java))
@@ -345,13 +345,15 @@ class HomeFragment @Inject constructor() : PolyBaseFragment<FragmentHomeBinding>
         }
         when (it.asyncUpdateOrderStatus) {
             is Success -> {
-                homeViewModel.handle(HomeViewAction.GetAllOrderByStatus(CONFIRMED_STATUS))
-                homeViewModel.handle(HomeViewAction.GetAllOrderByStatus(DELIVERING_STATUS))
+                initData()
                 homeViewModel.handleRemoveAsyncUpdateOrderStatus()
             }
 
             is Fail -> {
-
+                initData()
+                homeViewModel.handleRemoveAsyncUpdateOrderStatus()
+                showSnackbar(requireView(),"Đã có shipper khác nhận đơn",false,"Đã Hiểu"){
+                }
             }
 
             else -> {}
