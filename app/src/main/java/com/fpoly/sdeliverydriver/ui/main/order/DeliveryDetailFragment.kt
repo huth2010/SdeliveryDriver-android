@@ -12,6 +12,7 @@ import com.fpoly.sdeliverydriver.R
 import com.fpoly.sdeliverydriver.core.PolyBaseFragment
 import com.fpoly.sdeliverydriver.data.model.OrderResponse
 import com.fpoly.sdeliverydriver.data.model.ProductCart
+import com.fpoly.sdeliverydriver.data.model.ProductOrder
 import com.fpoly.sdeliverydriver.databinding.FragmentOrderDetailBinding
 import com.fpoly.sdeliverydriver.ui.delivery.adapter.ProductCartAdapter
 import com.fpoly.sdeliverydriver.ui.main.home.HomeViewModel
@@ -59,10 +60,10 @@ class DeliveryDetailFragment : PolyBaseFragment<FragmentOrderDetailBinding>() {
             location.text = currentOrder.address.addressLine
             phoneNumber.text = currentOrder.address.phoneNumber
         }
-        setupListProductCart(currentOrder.products)
+        setupListProductOrder(currentOrder.products)
     }
 
-    private fun setupListProductCart(products: List<ProductCart>) {
+    private fun setupListProductOrder(products: List<ProductOrder>) {
         productCartAdapter = ProductCartAdapter()
         views.rcCart.adapter=productCartAdapter
         productCartAdapter?.setData(products)

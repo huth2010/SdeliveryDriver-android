@@ -7,14 +7,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.fpoly.sdeliverydriver.R
 import com.fpoly.sdeliverydriver.data.model.ProductCart
+import com.fpoly.sdeliverydriver.data.model.ProductOrder
 import com.fpoly.sdeliverydriver.databinding.ItemCartBinding
 
 
 class ProductCartAdapter : RecyclerView.Adapter<ProductCartAdapter.CartViewHolder>() {
-    private var productsCart: List<ProductCart> = listOf()
-    fun setData(list: List<ProductCart>?) {
+    private var productsOrder: List<ProductOrder> = listOf()
+    fun setData(list: List<ProductOrder>?) {
         if (list != null) {
-            productsCart = list
+            productsOrder = list
             notifyDataSetChanged()
         }
     }
@@ -28,7 +29,7 @@ class ProductCartAdapter : RecyclerView.Adapter<ProductCartAdapter.CartViewHolde
         val size = binding.size
 
 
-        fun bind(currentProduct: ProductCart) {
+        fun bind(currentProduct: ProductOrder) {
             Glide.with(context).load(currentProduct.image).placeholder(R.drawable.loading_img)
                 .into(image)
             name.text = currentProduct.product_name
@@ -49,13 +50,13 @@ class ProductCartAdapter : RecyclerView.Adapter<ProductCartAdapter.CartViewHolde
     }
 
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
-        val currentProduct: ProductCart = productsCart[position]
+        val currentProduct: ProductOrder = productsOrder[position]
         holder.bind(currentProduct)
 
     }
 
     override fun getItemCount(): Int {
-        return productsCart.size
+        return productsOrder.size
     }
 
 }
