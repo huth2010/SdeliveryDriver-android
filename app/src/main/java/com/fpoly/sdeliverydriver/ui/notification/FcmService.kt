@@ -13,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.fpoly.sdeliverydriver.R
 import com.fpoly.sdeliverydriver.ui.chat.ChatActivity
+import com.fpoly.sdeliverydriver.ui.notification.receiver.MyReceiver
 import com.fpoly.sdeliverydriver.ultis.MyConfigNotifi
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -34,6 +35,9 @@ class FcmService : FirebaseMessagingService() {
             }
             MyConfigNotifi.TYPE_CHAT ->{
                 showNotifiChat("${notifi?.title}", "${notifi?.body}", type, idUrl)
+            }
+            MyConfigNotifi.TYPE_CALL_ANSWER ->{
+                sendActionCallVideo(type, idUrl)
             }
         }
 
@@ -72,5 +76,18 @@ class FcmService : FirebaseMessagingService() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
             notifiManager.notify(System.currentTimeMillis().toInt(), notfication.build())
         }
+    }
+
+    private fun sendActionCallVideo(type: String, idUrl: String?) {
+        val intent = Intent(this, MyReceiver::class.java)
+        intent.apply {
+            putExtras(Bundle().apply {
+                putString("type", type)
+                putString("idUrl", idUrl)
+            })
+        }
+        intent.putExtra("notification_action_broadcast", 2)
+
+        PendingIntent.getBroadcast(applicationContext, 2, intent, PendingIntent.FLAG_IMMUTABLE).send()
     }
 }

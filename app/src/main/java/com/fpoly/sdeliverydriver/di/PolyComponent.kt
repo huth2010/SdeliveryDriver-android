@@ -7,6 +7,7 @@ import com.fpoly.sdeliverydriver.PolyApplication
 import com.fpoly.sdeliverydriver.di.modules.FragmentModule
 import com.fpoly.sdeliverydriver.di.modules.NetworkModule
 import com.fpoly.sdeliverydriver.di.modules.ViewModelModule
+import com.fpoly.sdeliverydriver.ui.call.CallActivity
 import com.fpoly.sdeliverydriver.ui.chat.ChatActivity
 import com.fpoly.sdeliverydriver.ui.chat.home.HomeChatFragment
 import com.fpoly.sdeliverydriver.ui.delivery.DeliveryActivity
@@ -33,6 +34,7 @@ interface PolyComponent {
     fun inject(activity: LoginActivity)
     fun inject(activity: ChatActivity)
     fun inject(activity: DeliveryActivity)
+    fun inject(activity: CallActivity)
     fun inject(fragment: LoginFragment)
     fun inject(fragment: ProfileFragment)
     fun inject(fragment: HomeChatFragment)

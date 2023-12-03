@@ -5,6 +5,7 @@ import com.airbnb.mvrx.Loading
 import com.airbnb.mvrx.MvRxState
 import com.airbnb.mvrx.Uninitialized
 import com.fpoly.sdeliverydriver.data.model.DeliveryOrder
+import com.fpoly.sdeliverydriver.data.model.Gallery
 import com.fpoly.sdeliverydriver.data.model.OpenStreetMapResponse
 import com.fpoly.sdeliverydriver.data.model.OrderResponse
 import com.fpoly.sdeliverydriver.data.model.User
@@ -21,6 +22,8 @@ data class HomeViewState(
     var asyncGetCurrentLocation: Async<OpenStreetMapResponse> = Uninitialized,
     var asyncSuccessDeliveries: Async<List<DeliveryOrder>> = Uninitialized,
     var asyncCancelDeliveries: Async<List<DeliveryOrder>> = Uninitialized,
+
+    val galleries: Async<ArrayList<Gallery>> = Uninitialized,
 ): MvRxState {
     var isSwipeLoading = asyncUnconfirmed is Loading
 }
