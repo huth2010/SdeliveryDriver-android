@@ -29,7 +29,6 @@ class HomeChatFragment : PolyBaseFragment<FragmentHomeChatBinding>() {
     private val roomChatAdapter: RoomChatAdapter by lazy { RoomChatAdapter(object : RoomChatAdapter.IOnClickRoomChatListenner{
         override fun onClickItem(room: Room) {
             findNavController().navigate(R.id.roomChatFragment)
-
             chatViewModel.handle(ChatViewAction.setCurrentChat(room._id))
         }
 
