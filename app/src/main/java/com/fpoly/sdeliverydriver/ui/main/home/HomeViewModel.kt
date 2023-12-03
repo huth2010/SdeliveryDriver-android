@@ -4,6 +4,7 @@ import com.airbnb.mvrx.ActivityViewModelContext
 import com.airbnb.mvrx.FragmentViewModelContext
 import com.airbnb.mvrx.Loading
 import com.airbnb.mvrx.MvRxViewModelFactory
+import com.airbnb.mvrx.Success
 import com.airbnb.mvrx.Uninitialized
 import com.airbnb.mvrx.ViewModelContext
 import com.fpoly.sdeliverydriver.core.PolyBaseViewModel
@@ -13,6 +14,7 @@ import com.fpoly.sdeliverydriver.data.model.UpdateStatusRequest
 import com.fpoly.sdeliverydriver.data.model.UserLocation
 import com.fpoly.sdeliverydriver.data.repository.AuthRepository
 import com.fpoly.sdeliverydriver.data.repository.DeliveryRepository
+import com.fpoly.sdeliverydriver.data.repository.HomeRepository
 import com.fpoly.sdeliverydriver.data.repository.OrderRepository
 import com.fpoly.sdeliverydriver.data.repository.PlacesRepository
 import com.fpoly.sdeliverydriver.ultis.Constants.Companion.CANCEL_STATUS
@@ -22,10 +24,14 @@ import com.fpoly.sdeliverydriver.ultis.Constants.Companion.SUCCESS_STATUS
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class HomeViewModel @AssistedInject constructor(
     @Assisted state: HomeViewState,
     private val authRepository: AuthRepository,
+    private val repo: HomeRepository,
     private val orderRepository: OrderRepository,
     private val placesRepository: PlacesRepository,
     private val deliveryOrderRepository: DeliveryRepository
@@ -55,6 +61,7 @@ class HomeViewModel @AssistedInject constructor(
             is HomeViewAction.GetCurrentOrder -> handleGetCurrentOrder(action.id)
             is HomeViewAction.GetCurrentLocation -> handleGetCurrentLocation(action.lat,action.lon)
             is HomeViewAction.GetAllDeliveryOrders -> handleGetAllDeliveryOrders(action.statusId)
+            is HomeViewAction.getDataGallery -> getDataGallery()
         }
     }
 
@@ -118,6 +125,14 @@ class HomeViewModel @AssistedInject constructor(
                         copy(asyncDelivering = it)
                     }
             }
+        }
+    }
+    private fun getDataGallery() {
+        setState { copy(galleries = Loading()) }
+        CoroutineScope(Dispatchers.Main).launch{
+            val data = repo.getDataFromGallery()
+            val sortData= data.sortedByDescending { it.date }.toCollection(ArrayList())
+            setState { copy(galleries =  Success(sortData)) }
         }
     }
 

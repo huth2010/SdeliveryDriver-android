@@ -4,12 +4,14 @@ object MyConfigNotifi{
     const val CHANNEL_ID = "MY_CHANNEL_ID"
     const val CHANNEL_ID_CHAT = "MY_CHANNEL_ID_CHAT"
     const val CHANNEL_ID_CALL = "MY_CHANNEL_ID_CALL"
+    const val RC_SIGN_IN = 1111
 
-    // type để nhận biết loại thông báo muốn giử
     var TYPE_ALL = "TYPE_ALL"
+    var TYPE_ORDER = "TYPE_ORDER"
+    var TYPE_COUPONS = "TYPE_COUPONS"
     var TYPE_CHAT = "TYPE_CHAT"
-    var TYPE_CALL = "TYPE_CALL"
-
+    var TYPE_CALL_OFFER = "TYPE_CALL_OFFER"
+    var TYPE_CALL_ANSWER = "TYPE_CALL_ANSWER"
 }
 
 class Constants {
