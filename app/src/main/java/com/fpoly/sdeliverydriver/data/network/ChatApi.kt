@@ -2,9 +2,11 @@ package com.fpoly.sdeliverydriver.data.network
 
 import com.fpoly.sdeliverydriver.data.model.Message
 import com.fpoly.sdeliverydriver.data.model.Room
+import com.fpoly.sdeliverydriver.data.model.User
 import io.reactivex.Observable
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -23,6 +25,9 @@ interface ChatApi {
     @GET("/api/message/{id}")
     fun getMessage(@Path("id") roomId: String): Observable<ArrayList<Message>>
 
+    @GET("/api/message/call/{id}")
+    fun getLastCallMessage(@Path("id") roomId: String): Observable<Message>
+
     @Multipart
     @POST("/api/message")
     fun postMessage(
@@ -32,5 +37,8 @@ interface ChatApi {
         @Part("type") type: RequestBody,
         @Part images: List<MultipartBody.Part>
     ): Observable<Message>
+
+    @POST("/api/message/call")
+    fun postMessageCall(@Body message: Message): Observable<Message>
 
 }

@@ -1,6 +1,11 @@
 package com.fpoly.sdeliverydriver.ui.chat.room
 
 import android.content.ContentUris
+import android.content.Context
+import android.media.MediaMetadata
+import android.media.MediaMetadataRetriever
+import android.media.MediaMetadataRetriever.METADATA_KEY_DURATION
+import android.net.Uri
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -16,6 +21,9 @@ import com.fpoly.sdeliverydriver.data.model.GalleryType
 import com.fpoly.sdeliverydriver.data.model.GalleryVideo
 import com.fpoly.sdeliverydriver.data.model.GalleyImage
 import com.fpoly.sdeliverydriver.databinding.ItemGalleryChatBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
 
 class GalleryBottomChatAdapter(
     private val onClick: IOnClickLisstenner

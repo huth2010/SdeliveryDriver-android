@@ -1,4 +1,4 @@
-package com.fpoly.sdeliverydriver.ui.chat.call
+package com.fpoly.sdeliverydriver.ui.call.call
 
 import org.webrtc.DataChannel
 import org.webrtc.IceCandidate
