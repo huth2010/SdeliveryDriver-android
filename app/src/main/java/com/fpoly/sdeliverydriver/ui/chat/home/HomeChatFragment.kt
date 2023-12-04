@@ -21,7 +21,7 @@ import com.fpoly.sdeliverydriver.databinding.DialogOptionRoomBinding
 import com.fpoly.sdeliverydriver.databinding.FragmentHomeChatBinding
 import com.fpoly.sdeliverydriver.ui.chat.ChatViewAction
 import com.fpoly.sdeliverydriver.ui.chat.ChatViewmodel
-import com.fpoly.sdeliverydriver.ui.chat.call.WebRTCClient
+import com.fpoly.sdeliverydriver.ui.call.call.WebRTCClient
 import javax.inject.Inject
 
 class HomeChatFragment : PolyBaseFragment<FragmentHomeChatBinding>() {
@@ -60,7 +60,8 @@ class HomeChatFragment : PolyBaseFragment<FragmentHomeChatBinding>() {
 
     private fun clickUILisstenner() {
         views.layoutHeader.imgBack.setOnClickListener{
-            activity?.onBackPressed()
+//            activity?.onBackPressed()
+            activity?.finish()
         }
 
         views.edtSearch.setOnClickListener{
@@ -94,6 +95,4 @@ class HomeChatFragment : PolyBaseFragment<FragmentHomeChatBinding>() {
             else -> {}
         }
     }
-
-
 }

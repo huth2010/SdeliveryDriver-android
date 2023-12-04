@@ -15,6 +15,7 @@ import com.fpoly.sdeliverydriver.ultis.MyConfigNotifi
 import com.fpoly.sdeliverydriver.ultis.changeLanguage
 import com.fpoly.sdeliverydriver.ultis.changeMode
 import com.fpoly.sdeliverydriver.ultis.handleLogOut
+import com.fpoly.sdeliverydriver.ultis.startActivityWithData
 import javax.inject.Inject
 
 class SplashScreenActivity : PolyBaseActivity<ActivitySplashScreenBinding>(),SecurityViewModel.Factory{
@@ -63,14 +64,13 @@ class SplashScreenActivity : PolyBaseActivity<ActivitySplashScreenBinding>(),Sec
             }
             MyConfigNotifi.TYPE_CHAT ->{
                 startMainActivityToBackStack()
-                val intent = Intent(this, ChatActivity::class.java).apply {
-                    putExtras(Bundle().apply {
-                        putString("type", type)
-                        putString("idUrl", idUrl) }
-                    )
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                }
-                startActivity(intent)
+                val intent = Intent(this, ChatActivity::class.java)
+                startActivityWithData(intent, type, idUrl)
+            }
+            MyConfigNotifi.TYPE_CALL_ANSWER ->{
+                startMainActivityToBackStack()
+                val intent = Intent(this, ChatActivity::class.java)
+                startActivityWithData(intent, type, idUrl)
             }
             else ->{
                 startActivity(Intent(this, MainActivity::class.java))

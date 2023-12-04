@@ -40,6 +40,11 @@
             android:value="AIzaSyA1jRYFuIs7U4UjvhujZNxHLQIIS9EfUQQ" />
 
         <activity
+            android:name=".ui.call.CallActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.delivery.DeliveryActivity"
             android:exported="false"
 
@@ -76,6 +81,8 @@
             </intent-filter>
         </activity>
 
+
+        <receiver android:name=".ui.notification.receiver.MyReceiver" />
         <service
             android:name=".ui.notification.FcmService"
             android:exported="false">

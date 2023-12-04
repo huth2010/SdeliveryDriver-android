@@ -9,4 +9,5 @@ sealed class HomeViewAction : PolyViewAction {
     data class GetCurrentLocation(val lat: Double,val lon: Double) : HomeViewAction()
     data class GetCurrentOrder(val id: String) : HomeViewAction()
     data class UpdateOrderStatus(val id: String,val shipperId: String, val statusRequest: UpdateStatusRequest): HomeViewAction()
+    object getDataGallery: HomeViewAction()
 }

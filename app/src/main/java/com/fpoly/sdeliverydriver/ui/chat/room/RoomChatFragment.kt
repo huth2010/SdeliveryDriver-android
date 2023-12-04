@@ -1,12 +1,13 @@
 package com.fpoly.sdeliverydriver.ui.chat.room
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
+import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -30,18 +31,20 @@ import com.fpoly.sdeliverydriver.data.model.RequireCall
 import com.fpoly.sdeliverydriver.data.model.RequireCallType
 import com.fpoly.sdeliverydriver.data.model.User
 import com.fpoly.sdeliverydriver.databinding.FragmentRoomChatBinding
+import com.fpoly.sdeliverydriver.ui.call.CallActivity
 import com.fpoly.sdeliverydriver.ui.chat.ChatViewAction
 import com.fpoly.sdeliverydriver.ui.chat.ChatViewmodel
+import com.fpoly.sdeliverydriver.ultis.MyConfigNotifi
 import com.fpoly.sdeliverydriver.ultis.checkPermissionGallery
 import com.fpoly.sdeliverydriver.ultis.hideKeyboard
 import com.fpoly.sdeliverydriver.ultis.setMargins
 import com.fpoly.sdeliverydriver.ultis.showSnackbar
+import com.fpoly.sdeliverydriver.ultis.startActivityWithData
 import com.fpoly.sdeliverydriver.ultis.startToDetailPermission
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.stfalcon.imageviewer.StfalconImageViewer
-import java.io.File
 
 
 class RoomChatFragment : PolyBaseFragment<FragmentRoomChatBinding>() {
@@ -73,31 +76,43 @@ class RoomChatFragment : PolyBaseFragment<FragmentRoomChatBinding>() {
     }
 
     private fun initUI() {
-        chatViewmodel.initObserverPeerConnection()
+//        chatViewmodel.initObserverPeerConnection()
         views.layoutHeader.imgBack.isVisible = true
     }
 
     private fun setupRcv() {
-        adapter = RoomChatAdapter(object : RoomChatAdapter.IOnClickLisstenner {
-            @SuppressLint("ClickableViewAccessibility", "ResourceType")
-            override fun onClickItem(message: Message) {
-                handleBottomGallery(false)
-                context?.hideKeyboard(views.root)
+            adapter = RoomChatAdapter(object : RoomChatAdapter.IOnClickLisstenner {
+                @SuppressLint("ClickableViewAccessibility", "ResourceType")
+                override fun onClickItem(message: Message) {
+                    handleBottomGallery(false)
+                    context?.hideKeyboard(views.root)
 
-                if (message.type == MessageType.TYPE_IMAGE){
-                    if (message.images.isNullOrEmpty()) return
-                    showScreenPhoto(message.images)
+                    if (message.type == MessageType.TYPE_IMAGE){
+                        if (message.images.isNullOrEmpty()) return
+                        showScreenPhoto(message.images)
+                    }
                 }
-            }
 
-            override fun onLongClickItem(message: Message) {
+                override fun onLongClickItem(message: Message) {
 
-            }
-        })
+                }
 
-        views.rcvChat.adapter = adapter
-        views.rcvChat.recycledViewPool.clear()
-        views.rcvChat.layoutManager = LinearLayoutManager(requireContext())
+                override fun onClickItemJoinCall(message: Message) {
+                    val intent = Intent(requireContext(), CallActivity::class.java)
+                    val targetUserId = withState(chatViewmodel){it.curentRoom.invoke()?.shopUserId?._id}
+                    requireActivity().startActivityWithData(intent, MyConfigNotifi.TYPE_CALL_ANSWER, targetUserId)
+                }
+
+                override fun onClickItemCall() {
+                    val idTargetUser: String? = withState(chatViewmodel){ it.curentRoom.invoke()?.shopUserId?._id}
+                    val intent = Intent(requireContext(), CallActivity::class.java)
+                    requireActivity().startActivityWithData(intent, MyConfigNotifi.TYPE_CALL_OFFER, idTargetUser)
+                }
+            })
+
+            views.rcvChat.adapter = adapter
+            views.rcvChat.recycledViewPool.clear()
+            views.rcvChat.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun setupBottomSheetBihavior() {
@@ -146,6 +161,13 @@ class RoomChatFragment : PolyBaseFragment<FragmentRoomChatBinding>() {
             if (b) handleBottomGallery(false)
         }
 
+        views.edtMessage.setOnEditorActionListener{v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                views.imgSend.performClick()
+            }
+            true
+        }
+
         views.imgSend.setOnClickListener {
             handleSendMessage()
         }
@@ -160,8 +182,7 @@ class RoomChatFragment : PolyBaseFragment<FragmentRoomChatBinding>() {
             handleBottomGallery(!views.layoutBehavior.isVisible)
             context?.hideKeyboard(views.root)
 
-        }
-
+     }
 
         views.rcvGallery.setOnTouchListener { view, motionEvent ->
             context?.hideKeyboard(views.root)
@@ -196,9 +217,17 @@ class RoomChatFragment : PolyBaseFragment<FragmentRoomChatBinding>() {
         }
 
         views.imgCall.setOnClickListener{
-            chatViewmodel.setCallVideoWithUser(withState(chatViewmodel){ it.curentRoom.invoke()!!.shopUserId})
-            findNavController().navigate(R.id.callChatFragment)
-            chatViewmodel.sendCallToServer(RequireCall(RequireCallType.START_CALL, null, null, null))
+//            chatViewmodel.setCallVideoWithUser(withState(chatViewmodel){ it.curentRoom.invoke()!!.shopUserId})
+//            findNavController().navigate(R.id.callChatFragment)
+//            chatViewmodel.sendCallToServer(RequireCall(RequireCallType.START_CALL, null, null, null))
+
+            val idTargetUser: String? = withState(chatViewmodel){ it.curentRoom.invoke()?.shopUserId?._id}
+            val intent = Intent(requireContext(), CallActivity::class.java)
+            requireActivity().startActivityWithData(intent, MyConfigNotifi.TYPE_CALL_OFFER, idTargetUser)
+        }
+
+        views.imgCallVideo.setOnClickListener{
+            startActivity(Intent(requireContext(), CallActivity::class.java))
         }
     }
 
@@ -232,7 +261,9 @@ class RoomChatFragment : PolyBaseFragment<FragmentRoomChatBinding>() {
                 null,
                 null,
                 MessageType.TYPE_TEXT,
-                null
+                arrayListOf(),
+                arrayListOf(),
+                null, null
             )
             chatViewmodel.handle(ChatViewAction.postMessage(message, null))
             views.edtMessage.setText("")
@@ -250,6 +281,9 @@ class RoomChatFragment : PolyBaseFragment<FragmentRoomChatBinding>() {
                 null,
                 null,
                 MessageType.TYPE_IMAGE,
+                arrayListOf(),
+                arrayListOf(),
+                null,
                 null
             )
             chatViewmodel.handle(ChatViewAction.postMessage(message, listSelectGallery))
@@ -289,7 +323,7 @@ class RoomChatFragment : PolyBaseFragment<FragmentRoomChatBinding>() {
             }
             is Fail -> {
                 Toast.makeText(requireContext(), "Không tim thấy phòng", Toast.LENGTH_SHORT).show()
-                requireActivity().supportFragmentManager.popBackStack()
+                activity?.onBackPressed()
             }
             else -> {
             }

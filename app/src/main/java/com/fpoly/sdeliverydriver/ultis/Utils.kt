@@ -61,6 +61,11 @@ fun Context.hideKeyboard(view: View) {
     view.clearFocus()
 }
 
+fun Context.showKeyboard(view: View) {
+    view.requestFocus()
+    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+}
 @SuppressLint("ShowToast", "ResourceAsColor")
 public fun showSnackbar(view: View, message: String, isSuccess: Boolean, btnStr: String?, onClick: () -> Unit){
     val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
@@ -135,3 +140,15 @@ fun View.setMargins(left: Int, top: Int, right: Int, bottom: Int){
         this.requestLayout()
     }
 }
+
+fun Activity.startActivityWithData(intent: Intent, type: String?, idUrl: String?){
+    intent.apply {
+        putExtras(Bundle().apply {
+            putString("type", type)
+            putString("idUrl", idUrl) }
+        )
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    }
+    startActivity(intent)
+}
+

@@ -18,8 +18,8 @@ import com.fpoly.sdeliverydriver.data.repository.DeliveryRepository
 import com.fpoly.sdeliverydriver.data.repository.HomeRepository
 import com.fpoly.sdeliverydriver.data.repository.OrderRepository
 import com.fpoly.sdeliverydriver.data.repository.PlacesRepository
-import com.fpoly.sdeliverydriver.ui.chat.call.WebRTCClient
 import com.fpoly.sdeliverydriver.data.repository.UserRepository
+import com.fpoly.sdeliverydriver.ui.call.call.WebRTCClient
 import dagger.Module
 import dagger.Provides
 
@@ -45,8 +45,9 @@ object NetworkModule {
 
     @Provides
     fun providerHomeRepository(
-        api: OrderApi
-    ): HomeRepository = HomeRepository(api)
+        api: OrderApi,
+        contentDataSource: ContentDataSource
+    ): HomeRepository = HomeRepository(api, contentDataSource)
 
     @Provides
     fun providerApiUser(

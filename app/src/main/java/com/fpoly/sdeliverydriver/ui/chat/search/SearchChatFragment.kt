@@ -2,12 +2,19 @@ package com.fpoly.sdeliverydriver.ui.chat.search
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.mvrx.Fail
@@ -20,6 +27,9 @@ import com.fpoly.sdeliverydriver.core.PolyBaseFragment
 import com.fpoly.sdeliverydriver.databinding.FragmentSearchChatBinding
 import com.fpoly.sdeliverydriver.ui.chat.ChatViewAction
 import com.fpoly.sdeliverydriver.ui.chat.ChatViewmodel
+import com.fpoly.sdeliverydriver.ultis.showKeyboard
+import com.fpoly.sdeliverydriver.ui.chat.search.SearchChatAdapter
+import com.fpoly.sdeliverydriver.ultis.hideKeyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -47,9 +57,7 @@ class SearchChatFragment : PolyBaseFragment<FragmentSearchChatBinding>(){
     }
 
     private fun initUI() {
-        views.edtTitle.requestFocus()
-        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(views.edtTitle, InputMethodManager.SHOW_IMPLICIT)
+        context?.showKeyboard(views.edtTitle)
 
         adapter = SearchChatAdapter{
             findNavController().navigate(R.id.roomChatFragment)
@@ -66,6 +74,14 @@ class SearchChatFragment : PolyBaseFragment<FragmentSearchChatBinding>(){
 
         views.imgClear.setOnClickListener{
             views.edtTitle.setText("")
+        }
+
+        views.edtTitle.setOnEditorActionListener{v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                chatViewModel.handle(ChatViewAction.searchUserByName(views.edtTitle.text.toString()))
+                requireContext().hideKeyboard(views.root)
+            }
+            false
         }
 
         views.edtTitle.doOnTextChanged { text, start, before, count ->
