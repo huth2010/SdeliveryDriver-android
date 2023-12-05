@@ -221,6 +221,8 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
     private fun setupLocationCustomerMarkers(orders: List<OrderResponse>) {
         markerList.forEach { it.remove() }
         markerList.clear()
+        googleMap.clear()
+
         val firstOrderLocation = orders.firstOrNull()?.address?.toLatLng()
         if (firstOrderLocation != null) {
             if (markerList.isEmpty()) {

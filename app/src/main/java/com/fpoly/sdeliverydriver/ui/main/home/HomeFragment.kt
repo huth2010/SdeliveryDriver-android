@@ -93,7 +93,7 @@ class HomeFragment @Inject constructor() : PolyBaseFragment<FragmentHomeBinding>
     }
 
     override fun onResume() {
-        super.onResume()
+        initData()
         if (checkMapServices()) {
             if (mLocationPermissionGranted) {
                 getUserDetails()
@@ -101,6 +101,7 @@ class HomeFragment @Inject constructor() : PolyBaseFragment<FragmentHomeBinding>
                 getLocationPermission()
             }
         }
+        super.onResume()
     }
 
     private fun setupAppBar(location: String) {
