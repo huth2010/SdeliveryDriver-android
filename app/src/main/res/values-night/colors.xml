@@ -35,6 +35,7 @@
     <color name="grey_light">#e4e9f3</color>
     <color name="grey">#aaa</color>
     <color name="dark_grey">#ff424242</color>
+    <color name="grey_black">#667070</color>
 
     <color name="background">#202124</color>
     <color name="background1">#aaa/</color>

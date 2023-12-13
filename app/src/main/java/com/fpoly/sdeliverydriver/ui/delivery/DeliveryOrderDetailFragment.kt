@@ -1,6 +1,7 @@
 package com.fpoly.sdeliverydriver.ui.delivery
 
 import android.os.Bundle
+import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,24 +17,31 @@ import com.fpoly.sdeliverydriver.data.model.ProductCart
 import com.fpoly.sdeliverydriver.data.model.ProductOrder
 import com.fpoly.sdeliverydriver.databinding.FragmentDeliveryOrderDetailBinding
 import com.fpoly.sdeliverydriver.ui.delivery.adapter.ProductCartAdapter
+import com.fpoly.sdeliverydriver.ui.delivery.adapter.ProductOrderAdapter
+import com.fpoly.sdeliverydriver.ultis.formatCash
 
 class DeliveryOrderDetailFragment : PolyBaseFragment<FragmentDeliveryOrderDetailBinding>(){
     private val deliveryViewModel: DeliveryViewModel by activityViewModel()
     private var currentOrder: OrderResponse? = null
 
-    private var productCartAdapter: ProductCartAdapter? = null
+    private lateinit var productOrderAdapter: ProductOrderAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupAppBar()
+        initUI()
         listenEvent()
     }
 
-    private fun setupAppBar() {
+    private fun initUI() {
         views.appBar.apply {
             btnBackToolbar.visibility = View.VISIBLE
             tvTitleToolbar.text = getString(R.string.order)
         }
+
+        productOrderAdapter = ProductOrderAdapter{
+
+        }
+        views.rcvProduct.adapter = productOrderAdapter
     }
 
     private fun listenEvent() {
@@ -49,6 +57,8 @@ class DeliveryOrderDetailFragment : PolyBaseFragment<FragmentDeliveryOrderDetail
     }
 
     private fun setupUI(currentOrder: OrderResponse) {
+        productOrderAdapter.setData(currentOrder)
+
         views.apply {
             Glide.with(requireContext())
                 .load(currentOrder.userId.avatar?.url)
@@ -62,14 +72,19 @@ class DeliveryOrderDetailFragment : PolyBaseFragment<FragmentDeliveryOrderDetail
             orderCodeValue.text = currentOrder._id
             location.text = currentOrder.address.addressLine
             phoneNumber.text = currentOrder.address.phoneNumber
-        }
-        setupListProductCart(currentOrder.products)
-    }
+            phone.text = currentOrder.address.phoneNumber
 
-    private fun setupListProductCart(products: List<ProductOrder>) {
-        productCartAdapter = ProductCartAdapter()
-        views.rcCart.adapter=productCartAdapter
-        productCartAdapter?.setData(products)
+            Linkify.addLinks(phone, Linkify.PHONE_NUMBERS)
+            phone.setLinkTextColor(root.context.resources.getColor(R.color.black))
+
+            tvTotal.text = currentOrder.total.formatCash()
+            tvDiscount.text = currentOrder.discount.formatCash()
+            tvDeliverfee.text = currentOrder.deliveryFee.formatCash()
+            tvPrice.text = currentOrder.totalAll.formatCash()
+            tvTypePaymentName.text = currentOrder.statusPayment.status_name
+            tvIsPayment.text = if (currentOrder.isPayment) "Đã thanh toán" else "Chưa thanh toán"
+
+        }
     }
 
     override fun getBinding(

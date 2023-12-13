@@ -27,9 +27,8 @@ import com.fpoly.sdeliverydriver.core.PolyBaseFragment
 import com.fpoly.sdeliverydriver.databinding.FragmentSearchChatBinding
 import com.fpoly.sdeliverydriver.ui.chat.ChatViewAction
 import com.fpoly.sdeliverydriver.ui.chat.ChatViewmodel
-import com.fpoly.sdeliverydriver.ultis.showKeyboard
-import com.fpoly.sdeliverydriver.ui.chat.search.SearchChatAdapter
 import com.fpoly.sdeliverydriver.ultis.hideKeyboard
+import com.fpoly.sdeliverydriver.ultis.showKeyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -83,6 +82,7 @@ class SearchChatFragment : PolyBaseFragment<FragmentSearchChatBinding>(){
             }
             false
         }
+
 
         views.edtTitle.doOnTextChanged { text, start, before, count ->
             views.imgClear.isVisible = text.toString().length != 0

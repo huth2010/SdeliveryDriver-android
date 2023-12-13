@@ -9,7 +9,6 @@ import com.fpoly.sdeliverydriver.R
 import com.fpoly.sdeliverydriver.data.model.User
 import com.fpoly.sdeliverydriver.databinding.ItemSearchChatBinding
 
-@SuppressLint("NotifyDataSetChanged")
 class SearchChatAdapter(private val onClickItem : (user: User) -> Unit) : RecyclerView.Adapter<SearchChatAdapter.ViewHolder>() {
 
     private var users: ArrayList<User> = arrayListOf()

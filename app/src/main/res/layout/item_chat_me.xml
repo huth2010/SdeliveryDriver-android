@@ -103,6 +103,7 @@
                         android:layout_alignParentRight="true"
                         android:text="Xin chào bạn mình là hải"
                         android:visibility="gone"
+                        android:textIsSelectable="true"
                         />
 
                     <ImageView
