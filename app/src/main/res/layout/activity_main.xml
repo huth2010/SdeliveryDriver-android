@@ -28,7 +28,7 @@
             app:menu="@menu/menu_main"
             app:labelVisibilityMode="unlabeled"
             app:itemActiveIndicatorStyle="?attr/colorPrimary"
-            android:background="@color/white"
+            android:background="@color/grey_light"
         />
 
     </RelativeLayout>

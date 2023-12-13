@@ -37,6 +37,7 @@
     <color name="grey_transparent">#C1AAAAAA</color>
     <color name="dark_grey">#ff424242</color>
     <color name="grey_white">#F3F3F3</color>
+    <color name="grey_black">#667070</color>
 
     <color name="background">@color/white</color>
     <color name="background1">#aaa/</color>

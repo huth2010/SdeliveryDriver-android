@@ -135,4 +135,7 @@ dependencies {
     implementation ("com.google.maps.android:android-maps-utils:3.4.0")
     implementation ("com.google.maps.android:maps-utils-ktx:3.4.0")
 
+    // video
+    implementation ("com.google.android.exoplayer:exoplayer:2.19.1")
+    implementation ("com.google.android.exoplayer:exoplayer-ui:2.19.1")
 }

@@ -2,6 +2,8 @@ package com.fpoly.sdeliverydriver.ui.chat.room
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.text.util.Linkify
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -23,7 +25,6 @@ import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
-
 
 @SuppressLint("SetTextI18n")
 class RoomChatAdapter(
@@ -90,7 +91,7 @@ class RoomChatAdapter(
 
 
     override fun getItemViewType(position: Int): Int {
-        return if (messages[position].userIdSend?._id == currentRoom!!.userUserId!!._id) TYPE_ME else TYPE_YOU
+        return if (messages[position].userIdSend?._id == currentRoom?.userUserId?._id) TYPE_ME else TYPE_YOU
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -107,6 +108,7 @@ class RoomChatAdapter(
         holder.onBind(messages[position], position)
     }
 
+
     private fun handChatMe(binding: ItemChatMeBinding, message: Message, position: Int) {
 
         binding.tvTime.text = handleShowTimeMessage(message.createdAt)
@@ -119,6 +121,11 @@ class RoomChatAdapter(
 
             binding.imgMassage.setImageResource(0)
             binding.tvMessage.text = message.message
+
+            if (Patterns.WEB_URL.matcher(message.message.toString()).matches()){
+                Linkify.addLinks(binding.tvMessage, Linkify.WEB_URLS)
+                binding.tvMessage.setLinkTextColor(binding.root.context.resources.getColor(R.color.white))
+            }
 
         }else if(message.type == MessageType.TYPE_IMAGE && !message.images.isNullOrEmpty()){
             binding.imgMassage.isVisible = true
@@ -173,8 +180,8 @@ class RoomChatAdapter(
         }
         binding.tvMessage.setOnLongClickListener{ onCallBack.onLongClickItem(message)
             true }
-        binding.imgMassage.setOnLongClickListener{ onCallBack.onLongClickItem(message)
-            true }
+//        binding.imgMassage.setOnLongClickListener{ onCallBack.onLongClickItem(message)
+//            true }
     }
 
 
@@ -199,6 +206,11 @@ class RoomChatAdapter(
             binding.imgMassage.setImageResource(0)
             binding.tvMessage.text = message.message
 
+            if (Patterns.WEB_URL.matcher(message.message.toString()).matches()){
+                Linkify.addLinks(binding.tvMessage, Linkify.WEB_URLS)
+                binding.tvMessage.setLinkTextColor(binding.root.context.resources.getColor(R.color.grey_black))
+            }
+
         }else if(message.type == MessageType.TYPE_IMAGE && !message.images.isNullOrEmpty()){
             binding.imgMassage.isVisible = true
             binding.tvMessage.isVisible = false
@@ -253,14 +265,14 @@ class RoomChatAdapter(
         }
         binding.tvMessage.setOnLongClickListener{ onCallBack.onLongClickItem(message)
             true }
-        binding.imgMassage.setOnLongClickListener{ onCallBack.onLongClickItem(message)
-            true }
+//        binding.imgMassage.setOnLongClickListener{ onCallBack.onLongClickItem(message)
+//            true }
     }
 
     private fun checkTimeStamp(position: Int): Boolean {
         return if (position == 0) true else 3600000 < (
                 messages.get(position).createdAt!!.convertToDateFormat(StringUltis.dateIso8601Format)!!.time -
-                messages.get(position - 1).createdAt!!.convertToDateFormat(StringUltis.dateIso8601Format)!!.time
+                        messages.get(position - 1).createdAt!!.convertToDateFormat(StringUltis.dateIso8601Format)!!.time
                 )
     }
 

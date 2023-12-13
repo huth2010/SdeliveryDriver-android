@@ -108,6 +108,7 @@
                         android:backgroundTint="@color/grey_white"
                         android:layout_below="@+id/imgMassage"
                         android:text="Xin chào bạn mình là hải"
+                        android:textIsSelectable="true"
                         />
 
                     <ImageView

@@ -48,7 +48,15 @@ fun Fragment.checkPermissionGallery(isAllow: (Boolean) -> Unit) {
             }
     }
 }
-
+fun Fragment.checkPermisionCamera(isAllow: (Boolean) -> Unit) {
+    PermissionX.init(this)
+        .permissions(
+            android.Manifest.permission.CAMERA
+        )
+        .request { allGranded, _, _ ->
+            isAllow(allGranded)
+        }
+}
  fun Fragment.checkRequestPermissions(isAllow: (Boolean) -> Unit) {
      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
          PermissionX.init(this)

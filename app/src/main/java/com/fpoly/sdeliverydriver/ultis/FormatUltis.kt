@@ -1,6 +1,9 @@
 package com.fpoly.sdeliverydriver.ultis
 
 import android.annotation.SuppressLint
+import com.fpoly.sdeliverydriver.ultis.StringUltis.dateIso8601Format
+import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -9,7 +12,7 @@ object StringUltis {
     val dateIso8601Format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val dateIso8601Format2 = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     val dateTimeFormat = SimpleDateFormat("HH:mm:ss")
-    val dateTimeHourFormat = SimpleDateFormat("hh:mm aa")
+    val dateTimeHourFormat = SimpleDateFormat("HH:mm")
     val dateTimeDayFormat = SimpleDateFormat("hh:mm aa")
     val dateTimeDateFormat = SimpleDateFormat("HH:mm EEE dd/MM")
     val dateTimeDateFormat2 = SimpleDateFormat("EEE dd MMM - hh:mm aa")
@@ -18,11 +21,21 @@ object StringUltis {
     val dateFormat = SimpleDateFormat("dd/MM/yyyy")
     val dateMonthFormat = SimpleDateFormat("MMM yyyy")
     val dateDayTimeFormat = SimpleDateFormat("EEE dd/MM/yy\nHH:mm:ss")
+    val dateDay2TimeFormat = SimpleDateFormat("EEE dd/MM/yy HH:mm")
 }
 
 fun String.convertToStringFormat(inputDateFormat: SimpleDateFormat, outputDateFormat: SimpleDateFormat): String =
     try {
         val date = inputDateFormat.parse(this)
+        date?.let {
+            outputDateFormat.format(it)
+        } ?: this
+    } catch (e: Exception) {
+        this
+    }
+fun String.convertIsoToStringFormat(outputDateFormat: SimpleDateFormat): String =
+    try {
+        val date = dateIso8601Format.parse(this)
         date?.let {
             outputDateFormat.format(it)
         } ?: this
@@ -55,5 +68,45 @@ fun Date.compareWithString(strDate: String ,inputDateFormat: SimpleDateFormat) :
 }
 fun Long.convertLongToStringFormat(outputDateFormat: SimpleDateFormat): String = outputDateFormat.format(this)
 fun Long.convertLongToDate(): Date = Date(this)
+
+fun Double.formatCash(): String {
+    val formatter = NumberFormat.getInstance(Locale.US) as DecimalFormat
+    val symbols = formatter.decimalFormatSymbols
+    symbols.groupingSeparator = '.'
+    formatter.decimalFormatSymbols = symbols
+
+    if (this < 0) return "So tien am"
+    return "${formatter.format(this)} đ"
+}
+fun Int.formatCash(): String {
+    val formatter = NumberFormat.getInstance(Locale.US) as DecimalFormat
+    val symbols = formatter.decimalFormatSymbols
+    symbols.groupingSeparator = '.'
+    formatter.decimalFormatSymbols = symbols
+
+    if (this < 0) return "So tien am"
+    return "${formatter.format(this)} đ"
+}
+
+fun Double.formatRate(): String{
+    return DecimalFormat("#.#").format(this)
+}
+fun Double.formatPaypal(): String{
+    return DecimalFormat("#.##").format(this)
+}
+
+
+fun Int.formatView(): String{
+    if (this < 1000) {
+        return this.toString();
+    } else if (this < 1000000) {
+        return DecimalFormat("#.#").format(this.toDouble() / 1000) + "k";
+    } else if (this < 1000000000) {
+        return DecimalFormat("#.#").format(this.toDouble() / 1000000) + "M";
+    }else{
+        return DecimalFormat("#.#").format(this.toDouble() / 1000000000) + "B";
+    }
+}
+
 
 

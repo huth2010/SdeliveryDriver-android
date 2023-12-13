@@ -6,9 +6,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.findNavController
 import com.airbnb.mvrx.Fail
@@ -26,6 +28,9 @@ import com.fpoly.sdeliverydriver.ultis.Constants.Companion.DELIVERING_STATUS
 import com.fpoly.sdeliverydriver.ultis.Constants.Companion.MAPVIEW_BUNDLE_KEY
 import com.fpoly.sdeliverydriver.ultis.showSnackbar
 import com.fpoly.sdeliverydriver.ultis.MyConfigNotifi
+import com.fpoly.sdeliverydriver.ultis.StringUltis.dateTimeDayFormat
+import com.fpoly.sdeliverydriver.ultis.convertIsoToStringFormat
+import com.fpoly.sdeliverydriver.ultis.convertToStringFormat
 import com.fpoly.sdeliverydriver.ultis.showUtilDialogWithCallback
 import com.fpoly.sdeliverydriver.ultis.startToDetailPermission
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -166,6 +171,7 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
     }
 
 
+    @SuppressLint("ResourceAsColor")
     private fun setupOrderLayout(selectedOrder: OrderResponse) {
         views.apply {
             layoutAddress.visibility = View.VISIBLE
@@ -177,16 +183,40 @@ class MapsFragment : PolyBaseFragment<FragmentMapsBinding>(), OnMapReadyCallback
             recipientName.text = selectedOrder.address.recipientName
             phone.text = selectedOrder.address.phoneNumber
             address.text = selectedOrder.address.addressLine
+            tvTime.text = selectedOrder.createdAt.convertIsoToStringFormat(dateTimeDayFormat)
 
-            btnChat.setOnClickListener{
-                val intent = Intent(requireContext(), ChatActivity::class.java).apply {
-                    putExtras(Bundle().apply {
-                        putString("type", MyConfigNotifi.TYPE_CHAT)
-                        putString("idUrl", selectedOrder.userId._id) }
-                    )
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            Linkify.addLinks(phone, Linkify.PHONE_NUMBERS)
+            phone.setLinkTextColor(root.context.resources.getColor(R.color.black))
+
+            views.btnChat.setOnClickListener {
+                if (selectedOrder?.userId?._id != null){
+                    val intent = Intent(requireContext(), ChatActivity::class.java).apply {
+                        putExtras(Bundle().apply {
+                            putString("type", MyConfigNotifi.TYPE_CHAT)
+                            putString("idUrl", selectedOrder?.userId?._id ?: "")
+                        }
+                        )
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    startActivity(intent)
+                }else{
+                    Toast.makeText(requireContext(), "Không tìm thấy người giao hàng", Toast.LENGTH_SHORT).show()
                 }
-                startActivity(intent)
+            }
+            views.btnCall.setOnClickListener {
+                if (selectedOrder?.userId?._id != null){
+                    val intent = Intent(requireContext(), ChatActivity::class.java).apply {
+                        putExtras(Bundle().apply {
+                            putString("type", MyConfigNotifi.TYPE_CALL_OFFER)
+                            putString("idUrl", selectedOrder?.userId?._id ?: "")
+                        }
+                        )
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    startActivity(intent)
+                }else{
+                    Toast.makeText(requireContext(), "Không tìm thấy người giao hàng", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

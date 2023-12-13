@@ -32,8 +32,7 @@ class ChatRepository @Inject constructor(
     fun getRoomById(roomId: String): Observable<Room> = chatApi.getRoomById(roomId).subscribeOn(Schedulers.io())
     fun getRoomWithUserId(withUserId: String): Observable<Room> = chatApi.getRoomWithUserId(withUserId).subscribeOn(Schedulers.io())
     fun getMessage(idRoom: String): Observable<ArrayList<Message>> = chatApi.getMessage(idRoom).subscribeOn(Schedulers.io())
-
-    fun postMessage(message: Message, images: List<Gallery>?): Observable<Message>{
+    fun postMessage(message: Message, images: List<Gallery>?, pathPhoto: String?): Observable<Message>{
         if (message.roomId == null) return Observable.just(null)
 
         val reqBodyRoomId: RequestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), message.roomId!!)
@@ -52,10 +51,17 @@ class ChatRepository @Inject constructor(
                 }
             }
         }
+        if (!pathPhoto.isNullOrEmpty()){
+            val file = File(pathPhoto)
+            if (file != null){
+                val reqBodyImage: RequestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
+                val multipartBodyImage: MultipartBody.Part = MultipartBody.Part.createFormData("images", file.name, reqBodyImage)
+                reqBodyImages.add(multipartBodyImage)
+            }
+        }
 
         return chatApi.postMessage(reqBodyRoomId, reqBodyMessage, reqBodyLinkMessage, reqBodyType, reqBodyImages).subscribeOn(Schedulers.io())
     }
-
     fun postMessageCall(message: Message): Observable<Message> = chatApi.postMessageCall(message).subscribeOn(Schedulers.io())
     fun getLastCallMessage(roomId: String): Observable<Message> = chatApi.getLastCallMessage(roomId).subscribeOn(Schedulers.io())
 
