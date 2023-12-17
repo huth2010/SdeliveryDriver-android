@@ -42,7 +42,7 @@
     <string name="login_title">Đăng nhập</string>
     <string name="email_title">Vui lòng nhập địa chỉ email của bạn</string>
     <string name="forget_password">Quên mật khẩu</string>
-    <string name="lable_sign_up">Bạn chưa có tài khoản? <font color="#0085FF"><b>Đăng ký</b></font></string>
+    <string name="lable_sign_up">Bạn chưa có tài khoản? <font color="#0085FF"><b>Liên hệ với cửa hàng</b></font></string>
     <string name="lable_sign_in">Bạn đã có tài khoản? <font color="#0085FF"><b>Đăng nhập</b></font></string>
     <string name="username_not_empty">Trường này không được để trống.</string>
     <string name="password_not_empty">Trường này không được để trống.</string>
