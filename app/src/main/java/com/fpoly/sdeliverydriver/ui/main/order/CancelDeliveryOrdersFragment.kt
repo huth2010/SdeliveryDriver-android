@@ -24,14 +24,14 @@ class CancelDeliveryOrdersFragment :  PolyBaseFragment<FragmentCancelDeliveryOrd
 
     override fun invalidate(){
         withState(homeViewModel){
-            when(it.asyncSuccessDeliveries){
+            when(it.asyncCancelDeliveries){
                 is Success -> {
                     val adapter = DeliveryOrderAdapter{
                         homeViewModel.handle(HomeViewAction.GetCurrentOrder(it))
                         findNavController().navigate(R.id.action_DeliveryOrderFragment_to_deliveryDetailFragment)
                     }
                     views.rcyDeliveryOrder.adapter = adapter
-                    adapter.setData(it.asyncSuccessDeliveries.invoke())
+                    adapter.setData(it.asyncCancelDeliveries.invoke())
                 }
 
                 else -> {}

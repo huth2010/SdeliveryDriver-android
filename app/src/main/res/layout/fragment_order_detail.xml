@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/orderDetailContainer"
@@ -12,6 +12,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/orderDetailLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -21,432 +22,467 @@
                 layout="@layout/toolbar_header" />
 
             <LinearLayout
-                android:id="@+id/orderStatusLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_marginHorizontal="16dp"
                 android:orientation="vertical">
-
                 <TextView
-                    android:id="@+id/orderStatusTitle"
+                    android:id="@+id/userInfoTitle"
                     android:layout_width="match_parent"
-                    android:layout_height="37dp"
-                    android:layout_marginRight="32dp"
-                    android:text="Đã có tài xế nhận hàng"
-                    android:textSize="20dp"
+                    android:layout_height="wrap_content"
+                    android:text="Người đặt hàng"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/orderStatusMessage"
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_marginRight="32dp"
-                    android:text="Tài xế đang chờ lấy hàng"
-                    android:textSize="14sp" />
-
-                <LinearLayout
-                    android:id="@+id/orderStatusProgressLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="28dp"
-                    android:background="@drawable/traking_toolbar"
-                    android:gravity="center"
-                    android:layout_gravity="center"
+                <RelativeLayout
+                    android:visibility="visible"
+                    android:id="@+id/layout_user"
                     android:layout_marginVertical="16dp"
-                    android:orientation="horizontal">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_boder_radius"
+                    android:padding="12dp">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/img_avatar"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:src="@drawable/ellipse" />
+
+                    <LinearLayout
+                        android:id="@+id/layout_addressLine"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@+id/img_avatar"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/user_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginBottom="4dp"
+                            android:text="Bao Bao"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/phone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginBottom="4dp"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                    </LinearLayout>
 
                     <ImageView
-                        android:id="@+id/waitingOrderIcon"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/icon_waiting_order" />
-
-                    <View
-                        android:id="@+id/progressView1"
-                        android:layout_width="80dp"
-                        android:layout_height="5dp"
-                        android:background="@color/red" />
+                        android:id="@+id/btn_chat"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_toLeftOf="@+id/btn_call"
+                        android:src="@drawable/icon_chat" />
 
                     <ImageView
-                        android:id="@+id/cookingIcon"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/icon_cooking" />
+                        android:id="@+id/btn_call"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginLeft="20dp"
+                        android:src="@drawable/icon_call" />
+                </RelativeLayout>
 
-                    <View
-                        android:id="@+id/progressView2"
-                        android:layout_width="80dp"
-                        android:layout_height="5dp"
-                        android:background="@color/red" />
-
-                    <ImageView
-                        android:id="@+id/deliveringIcon"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/icon_delivering" />
-
-                    <View
-                        android:id="@+id/progressView3"
-                        android:layout_width="80dp"
-                        android:layout_height="5dp"
-                        android:background="@color/red" />
-
-                    <ImageView
-                        android:id="@+id/deliveredIcon"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/icon_delivered" />
-
-                </LinearLayout>
             </LinearLayout>
 
-            <RelativeLayout
+            <View
                 android:id="@+id/spacer"
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
                 android:background="#F3F4F6"
-                android:layout_marginVertical="16dp"
                 />
 
             <LinearLayout
-                android:id="@+id/orderDetailLayout"
+                android:id="@+id/orderInfoLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/orderInfoTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Thông tin đơn hàng"
+                    android:textSize="16dp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/orderTimeLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Thời gian đặt"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:id="@+id/orderTimeValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="16/11/2022, 12:30 - 13:00"
+                        android:textAlignment="textEnd"
+                        android:textSize="14dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/pickupTimeLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cập nhật lúc"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:id="@+id/pickupTimeValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Hôm nay, 12:15"
+                        android:textAlignment="textEnd"
+                        android:textSize="14dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/orderCodeLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Mã đơn hàng"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:id="@+id/orderCodeValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:layout_weight="1"
+                        android:text="#252893"
+                        android:textAlignment="textEnd"
+                        android:textSize="14dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_cupond"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_title_cupond"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Mã giảm giá"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:id="@+id/tv_id_cupond"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:layout_weight="1"
+                        android:text="#252893"
+                        android:textAlignment="textEnd"
+                        android:textSize="14dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/deliveryAddressLayout"
+                android:layout_width="match_parent"
+                android:layout_height="141dp"
+                android:layout_margin="16dp"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/deliveryAddressTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Địa chỉ nhận hàng"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/recipientLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Người nhận:"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:id="@+id/recipientName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="textEnd"
+                        android:textSize="14dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/phoneNumberLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="21dp"
+                        android:layout_weight="1"
+                        android:text="Số điện thoại:"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:id="@+id/phoneNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="21dp"
+                        android:layout_weight="1"
+                        android:textAlignment="textEnd"
+                        android:textSize="14dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/locationLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="21dp"
+                        android:layout_weight="1"
+                        android:text="Địa chỉ:"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:id="@+id/location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="textEnd"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:background="#F3F4F6"
+                android:layout_marginBottom="16dp"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_product"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                tools:listitem="@layout/item_product_order"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="vertical"
+                />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginHorizontal="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Tổng tiền"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginHorizontal="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Khuyến mãi"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_discount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginHorizontal="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Phí vận chuyển"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_deliverfee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginHorizontal="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_title_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="21dp"
+                    android:layout_weight="1"
+                    android:text="Thành tiền"
+                    android:maxLines="1"
+                    android:textSize="14dp" />
+
+                <TextView
+                    android:id="@+id/tv_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:textColor="@color/red"
+                    android:textSize="18sp"
+                    android:text="19200 đ"
+                    android:maxLines="1"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="57dp"
+                android:layout_marginHorizontal="16dp"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/userInfoTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Người đặt hàng"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                    <RelativeLayout
-                        android:visibility="visible"
-                        android:id="@+id/layout_user"
-                        android:layout_marginVertical="16dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/background_boder_radius"
-                        android:padding="12dp">
-
-                        <ImageView
-                            android:id="@+id/img_avatar"
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:src="@drawable/ellipse" />
-
-                        <LinearLayout
-                            android:id="@+id/layout_addressLine"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_toRightOf="@+id/img_avatar"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/user_name"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginBottom="4dp"
-                                android:text="Bao Bao"
-                                android:textColor="@color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/phone"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginBottom="4dp"
-                                android:text="08531234"
-                                android:textColor="@color/black"
-                                android:textSize="16sp" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:id="@+id/btn_chat"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_toLeftOf="@+id/btn_call"
-                            android:src="@drawable/icon_chat" />
-
-                        <ImageView
-                            android:id="@+id/btn_call"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginLeft="20dp"
-                            android:src="@drawable/icon_call" />
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="8dp"
-                    android:background="#F3F4F6"
-                    />
-
-                <LinearLayout
-                    android:id="@+id/orderInfoLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="119dp"
-                    android:layout_margin="16dp"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/orderInfoTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Thông tin đơn hàng"
-                        android:textSize="16dp"
+                        android:layout_weight="1"
+                        android:text="Hình thức thanh toán"
+                        android:textSize="14dp"
                         android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/orderTimeLabel"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Thời gian đặt"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/orderTimeValue"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:maxLines="1"
-                            android:ellipsize="end"
-                            android:text="16/11/2022, 12:30 - 13:00"
-                            android:textAlignment="textEnd"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/orderCodeLabel"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Mã đơn hàng"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/orderCodeValue"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="#252893"
-                            android:maxLines="1"
-                            android:ellipsize="end"
-                            android:textAlignment="textEnd"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/pickupTimeLabel"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Thời gian nhận"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/pickupTimeValue"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:maxLines="1"
-                            android:ellipsize="end"
-                            android:text="Hôm nay, 12:15"
-                            android:textAlignment="textEnd"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/deliveryAddressLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="141dp"
-                    android:layout_margin="16dp"
-                    android:layout_marginTop="12dp"
-                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/deliveryAddressTitle"
+                        android:id="@+id/tv_type_payment_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Địa chỉ nhận hàng"
-                        android:textSize="16dp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/recipientLabel"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Người nhận:"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/recipientName"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Nguyễn Văn Khuyến"
-                            android:maxLines="1"
-                            android:ellipsize="end"
-                            android:textAlignment="textEnd"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/phoneNumberLabel"
-                            android:layout_width="match_parent"
-                            android:layout_height="21dp"
-                            android:layout_weight="1"
-                            android:text="Số điện thoại:"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/phoneNumber"
-                            android:layout_width="match_parent"
-                            android:layout_height="21dp"
-                            android:layout_weight="1"
-                            android:text=" 0988522939"
-                            android:maxLines="1"
-                            android:ellipsize="end"
-                            android:textAlignment="textEnd"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/locationLabel"
-                            android:layout_width="match_parent"
-                            android:layout_height="21dp"
-                            android:layout_weight="1"
-                            android:text="Địa chỉ:"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/location"
-                            android:layout_width="match_parent"
-                            android:layout_height="43dp"
-                            android:layout_weight="1"
-                            android:text="315,  Trường Chinh, Khương Mai, Đống Đa, Hà Nội"
-                            android:textAlignment="textEnd"
-                            android:textSize="14sp" />
-
-                    </LinearLayout>
-
+                        android:layout_weight="1"
+                        android:text="Tiền mặt"
+                        android:textAlignment="textEnd"
+                        android:textSize="14dp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/cartInfoTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Sản phẩm đã mua"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_marginTop="16dp"
-                        android:id="@+id/rc_cart"
-                        android:layout_width="match_parent"
-                        android:layout_height="180dp"
-                        android:minHeight="100dp"
-                        tools:listitem="@layout/item_cart"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        android:orientation="vertical"
-                        />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="57dp"
-                    android:layout_margin="16dp"
-                    android:orientation="vertical">
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Hình thức thanh toán"
-                        android:textSize="16dp"
+                        android:layout_weight="1"
+                        android:text="Đã thanh toán"
+                        android:textSize="14dp"
                         android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tv_is_payment"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Tiền mặt"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/payment_type"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Thanh toán khi nhận hàng"
-                            android:textAlignment="textEnd"
-                            android:textSize="14sp" />
-                    </LinearLayout>
+                        android:layout_gravity="end"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
-</FrameLayout>
+</RelativeLayout>

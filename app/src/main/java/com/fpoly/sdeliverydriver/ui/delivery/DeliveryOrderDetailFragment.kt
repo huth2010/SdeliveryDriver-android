@@ -1,10 +1,12 @@
 package com.fpoly.sdeliverydriver.ui.delivery
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.airbnb.mvrx.Success
 import com.airbnb.mvrx.activityViewModel
@@ -16,8 +18,10 @@ import com.fpoly.sdeliverydriver.data.model.OrderResponse
 import com.fpoly.sdeliverydriver.data.model.ProductCart
 import com.fpoly.sdeliverydriver.data.model.ProductOrder
 import com.fpoly.sdeliverydriver.databinding.FragmentDeliveryOrderDetailBinding
+import com.fpoly.sdeliverydriver.ui.chat.ChatActivity
 import com.fpoly.sdeliverydriver.ui.delivery.adapter.ProductCartAdapter
 import com.fpoly.sdeliverydriver.ui.delivery.adapter.ProductOrderAdapter
+import com.fpoly.sdeliverydriver.ultis.MyConfigNotifi
 import com.fpoly.sdeliverydriver.ultis.formatCash
 
 class DeliveryOrderDetailFragment : PolyBaseFragment<FragmentDeliveryOrderDetailBinding>(){
@@ -53,6 +57,36 @@ class DeliveryOrderDetailFragment : PolyBaseFragment<FragmentDeliveryOrderDetail
         }
         views.btnCancel.setOnClickListener {
             findNavController().navigate(R.id.action_deliveryOrderDetailFragment_to_problemFragment)
+        }
+        views.btnChat.setOnClickListener {
+            if (currentOrder?.userId?._id != null){
+                val intent = Intent(requireContext(), ChatActivity::class.java).apply {
+                    putExtras(Bundle().apply {
+                        putString("type", MyConfigNotifi.TYPE_CHAT)
+                        putString("idUrl", currentOrder?.userId?._id ?: "")
+                    }
+                    )
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                startActivity(intent)
+            }else{
+                Toast.makeText(requireContext(), "Không tìm thấy người giao hàng", Toast.LENGTH_SHORT).show()
+            }
+        }
+        views.btnCall.setOnClickListener {
+            if (currentOrder?.userId?._id != null){
+                val intent = Intent(requireContext(), ChatActivity::class.java).apply {
+                    putExtras(Bundle().apply {
+                        putString("type", MyConfigNotifi.TYPE_CALL_OFFER)
+                        putString("idUrl", currentOrder?.userId?._id ?: "")
+                    }
+                    )
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                startActivity(intent)
+            }else{
+                Toast.makeText(requireContext(), "Không tìm thấy người giao hàng", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

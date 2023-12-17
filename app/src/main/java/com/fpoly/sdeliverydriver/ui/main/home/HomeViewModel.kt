@@ -40,10 +40,8 @@ class HomeViewModel @AssistedInject constructor(
     init {
         handleGetAllOrderByStatus(CONFIRMED_STATUS)
         handleGetAllOrderByStatus(DELIVERING_STATUS)
-        handleGetAllDeliveryOrders(SUCCESS_STATUS)
-        handleGetAllDeliveryOrders(CANCEL_STATUS)
 
-        authRepository.getTokenDevice{
+        authRepository.getTokenDevice {
             authRepository.addTokenDevice(TokenDevice(it)).execute {
                 copy()
             }
@@ -58,35 +56,30 @@ class HomeViewModel @AssistedInject constructor(
                 action.shipperId,
                 action.statusRequest
             )
+
             is HomeViewAction.GetCurrentOrder -> handleGetCurrentOrder(action.id)
-            is HomeViewAction.GetCurrentLocation -> handleGetCurrentLocation(action.lat,action.lon)
-            is HomeViewAction.GetAllDeliveryOrders -> handleGetAllDeliveryOrders(action.statusId)
+            is HomeViewAction.GetCurrentLocation -> handleGetCurrentLocation(action.lat, action.lon)
+            is HomeViewAction.GetAllDeliveryOrders -> handleGetAllDeliveryOrders()
             is HomeViewAction.getDataGallery -> getDataGallery()
         }
     }
 
-    private fun handleGetAllDeliveryOrders(statusId: String) {
-        when(statusId){
-            SUCCESS_STATUS -> {
-                setState { copy(asyncSuccessDeliveries = Loading()) }
-                deliveryOrderRepository.getAllDeliveryOrders(statusId)
-                    .execute {
-                        copy(asyncSuccessDeliveries = it)
-                    }
+    private fun handleGetAllDeliveryOrders() {
+        setState { copy(asyncSuccessDeliveries = Loading()) }
+        deliveryOrderRepository.getAllDeliveryOrders(SUCCESS_STATUS)
+            .execute {
+                copy(asyncSuccessDeliveries = it)
             }
-            CANCEL_STATUS -> {
-                setState { copy(asyncCancelDeliveries = Loading()) }
-                deliveryOrderRepository.getAllDeliveryOrders(statusId)
-                    .execute {
-                        copy(asyncCancelDeliveries = it)
-                    }
+        setState { copy(asyncCancelDeliveries = Loading()) }
+        deliveryOrderRepository.getAllDeliveryOrders(CANCEL_STATUS)
+            .execute {
+                copy(asyncCancelDeliveries = it)
             }
-        }
-
     }
+
     private fun handleGetCurrentLocation(lat: Double, lon: Double) {
         setState { copy(asyncGetCurrentLocation = Loading()) }
-        placesRepository.getLocationName(lat,lon)
+        placesRepository.getLocationName(lat, lon)
             .execute {
                 copy(asyncGetCurrentLocation = it)
             }
@@ -100,9 +93,13 @@ class HomeViewModel @AssistedInject constructor(
             }
     }
 
-    private fun handleUpdateOrderStatus(id: String, shipperId: String,statusRequest: UpdateStatusRequest) {
+    private fun handleUpdateOrderStatus(
+        id: String,
+        shipperId: String,
+        statusRequest: UpdateStatusRequest
+    ) {
         setState { copy(asyncUpdateOrderStatus = Loading()) }
-        orderRepository.updateOrderStatus(id, shipperId ,statusRequest)
+        orderRepository.updateOrderStatus(id, shipperId, statusRequest)
             .execute {
                 copy(asyncUpdateOrderStatus = it)
             }
@@ -127,18 +124,20 @@ class HomeViewModel @AssistedInject constructor(
             }
         }
     }
+
     private fun getDataGallery() {
         setState { copy(galleries = Loading()) }
-        CoroutineScope(Dispatchers.Main).launch{
+        CoroutineScope(Dispatchers.Main).launch {
             val data = repo.getDataFromGallery()
-            val sortData= data.sortedByDescending { it.date }.toCollection(ArrayList())
-            setState { copy(galleries =  Success(sortData)) }
+            val sortData = data.sortedByDescending { it.date }.toCollection(ArrayList())
+            setState { copy(galleries = Success(sortData)) }
         }
     }
 
     fun handleRemoveAsyncUpdateOrderStatus() {
-        setState { copy(asyncUpdateOrderStatus=Uninitialized) }
+        setState { copy(asyncUpdateOrderStatus = Uninitialized) }
     }
+
     fun handleChangeThemeMode(isChecked: Boolean) {
         _viewEvents.post(HomeViewEvent.ChangeDarkMode(isChecked))
     }
