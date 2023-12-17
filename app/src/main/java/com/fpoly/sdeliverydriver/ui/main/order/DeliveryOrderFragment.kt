@@ -7,17 +7,23 @@ import android.view.ViewGroup
 import com.airbnb.mvrx.activityViewModel
 import com.fpoly.sdeliverydriver.core.PolyBaseFragment
 import com.fpoly.sdeliverydriver.databinding.FragmentOrderBinding
+import com.fpoly.sdeliverydriver.ui.main.home.HomeViewAction
 import com.fpoly.sdeliverydriver.ui.main.home.HomeViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class DeliveryOrderFragment : PolyBaseFragment<FragmentOrderBinding>() {
-
+    private val homeViewModel:HomeViewModel by activityViewModel()
     private lateinit var tabLayout: TabLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupAppBar()
+        initData()
+    }
+
+    private fun initData() {
+        homeViewModel.handle(HomeViewAction.GetAllDeliveryOrders)
     }
 
     private fun setupAppBar() {
