@@ -69,7 +69,7 @@ class HomeFragment @Inject constructor() : PolyBaseFragment<FragmentHomeBinding>
     }
 
     private lateinit var mDb: FirebaseFirestore
-    private lateinit var mGoogleMap: GoogleMap
+    private var mGoogleMap: GoogleMap? = null
     private var mFusedLocationProviderClient: FusedLocationProviderClient? = null
     private var mUserLocation: UserLocation? = null
     private var mLocationPermissionGranted = false
@@ -235,9 +235,9 @@ class HomeFragment @Inject constructor() : PolyBaseFragment<FragmentHomeBinding>
         if (mUserLocation != null) {
             val latLng =
                 LatLng(mUserLocation!!.geoPoint!!.latitude, mUserLocation!!.geoPoint!!.longitude)
-            mGoogleMap.clear()
-            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
-            mGoogleMap.addMarker(MarkerOptions().position(latLng))
+            mGoogleMap?.clear()
+            mGoogleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
+            mGoogleMap?.addMarker(MarkerOptions().position(latLng))
         }
     }
 

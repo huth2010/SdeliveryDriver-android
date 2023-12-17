@@ -24,7 +24,6 @@ class CancelReasonAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cancelReason = cancelReasons[position]
-
         holder.textCancelReason.text = cancelReason
         holder.itemView.setOnClickListener { onItemClickListener(cancelReason) }
     }
