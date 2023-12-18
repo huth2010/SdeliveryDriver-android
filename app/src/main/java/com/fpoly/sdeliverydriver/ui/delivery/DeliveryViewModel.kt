@@ -8,6 +8,7 @@ import com.airbnb.mvrx.Uninitialized
 import com.airbnb.mvrx.ViewModelContext
 import com.fpoly.sdeliverydriver.core.PolyBaseViewModel
 import com.fpoly.sdeliverydriver.data.model.CreateDeliveryOrderRequest
+import com.fpoly.sdeliverydriver.data.model.Data
 import com.fpoly.sdeliverydriver.data.model.UpdateStatusRequest
 import com.fpoly.sdeliverydriver.data.repository.DeliveryRepository
 import com.fpoly.sdeliverydriver.data.repository.OrderRepository
@@ -32,6 +33,7 @@ class DeliveryViewModel @AssistedInject constructor(
             is DeliveryViewAction.GetCurrentOrder -> handleGetCurrentOrder(action.id)
             is DeliveryViewAction.CreateDeliveryOrder -> handleCreateDeliveryOrder(action.request)
             is DeliveryViewAction.SetCurrentCancelReason -> handleSetCurrentCancelReason(action.cancelReason)
+            else -> {}
         }
     }
 
@@ -93,6 +95,10 @@ class DeliveryViewModel @AssistedInject constructor(
     }
     fun handleRemoveAsyncCreateDelivery() {
         setState { copy(asyncCreateDelivery= Uninitialized) }
+    }
+
+    fun sendData(data: String) {
+        _viewEvents.post(DeliveryViewEvent.CancelReason(data))
     }
 
     @AssistedFactory

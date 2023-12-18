@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -47,6 +48,7 @@ class ProblemFragment : PolyBaseFragment<FragmentProblemBinding>() {
     private var multipartBody: MultipartBody.Part? = null
     private var currentPhotoUri: Uri? = null
     private var takePictureLauncher: ActivityResultLauncher<Uri>? = null
+    private var cancelReason: String?=""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -63,6 +65,18 @@ class ProblemFragment : PolyBaseFragment<FragmentProblemBinding>() {
     }
 
     private fun setupEventListeners() {
+        deliveryViewModel.observeViewEvents {
+            when(it){
+               is DeliveryViewEvent.CancelReason -> {
+                    if (it.data!=null){
+                        cancelReason=it.data
+                        setupCancelReason(it.data)
+                    }
+                }
+
+                else -> {}
+            }
+        }
         views.appBar.btnBackToolbar.setOnClickListener {
             findNavController().popBackStack()
         }
@@ -72,7 +86,9 @@ class ProblemFragment : PolyBaseFragment<FragmentProblemBinding>() {
         }
 
         views.btnChoosePhoto.setOnClickListener { selectImageFromGallery() }
-        views.btnConfirm.setOnClickListener { createDeliveryOrder() }
+        views.btnConfirm.setOnClickListener {
+            createDeliveryOrder()
+        }
         views.cancelReason.setOnClickListener { openReasonBottomSheet() }
     }
 
@@ -182,10 +198,10 @@ class ProblemFragment : PolyBaseFragment<FragmentProblemBinding>() {
 
             if (currentPhotoUri != null) {
                 val filePath = uriToFilePath(currentPhotoUri!!)
-                if (filePath.isNotEmpty()) {
+                if (filePath.isNotEmpty()&& checkValidateData()) {
+                    views.progressBar.visibility = View.VISIBLE
                     val requestFile =
                         File(filePath).asRequestBody("multipart/form-data".toMediaTypeOrNull())
-                    Log.d("TAG", "createDeliveryOrder: $filePath")
                     multipartBody =
                         MultipartBody.Part.createFormData(
                             "images",
@@ -197,16 +213,24 @@ class ProblemFragment : PolyBaseFragment<FragmentProblemBinding>() {
                         CANCEL_STATUS.toRequestBody(mediaType),
                         multipartBody!!,
                         views.comment.text.toString().toRequestBody(mediaType),
-                        views.cancelReason.text.toString().toRequestBody(mediaType)
+                        cancelReason!!.toRequestBody(mediaType)
                     )
                     handleCreateDeliveryOrder(createRequest)
                 } else {
-                    showSnackbar(requireView(), "Error creating delivery order", false, "") {}
+                    showSnackbar(requireView(), "Hãy chọn ảnh minh chứng và lý do huỷ đơn", false, "") {}
                 }
             } else {
-                showSnackbar(requireView(), "Error creating delivery order", false, "") {}
+                showSnackbar(requireView(), "Lỗi không thể tải báo cáo lên hệ thống", false, "") {}
             }
         }
+    }
+
+    private fun checkValidateData(): Boolean{
+        if (cancelReason==""){
+            Toast.makeText(requireContext(), "Hãy chọn lý do hủy đơn", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
     }
 
     private fun handleCreateDeliveryOrder(createRequest: CreateDeliveryOrderRequest) {
@@ -280,9 +304,6 @@ class ProblemFragment : PolyBaseFragment<FragmentProblemBinding>() {
     }
 
     override fun invalidate(): Unit = withState(deliveryViewModel) {
-        if (it.cancelReason!=null){
-            setupCancelReason(it.cancelReason)
-        }
         when (it.asyncGetCurrentOrder) {
             is Success -> {
                 currentOrder = it.asyncGetCurrentOrder.invoke()
@@ -300,6 +321,7 @@ class ProblemFragment : PolyBaseFragment<FragmentProblemBinding>() {
         }
         when (it.asyncCreateDelivery) {
             is Success -> {
+                views.progressBar.visibility = View.GONE
                 showSuccessDialog()
                 findNavController().popBackStack()
             }

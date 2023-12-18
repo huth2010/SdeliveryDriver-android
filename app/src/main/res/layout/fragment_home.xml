@@ -34,15 +34,9 @@
                     android:textColor="@color/title"
                     android:textSize="16sp" />
 
-                <ImageView
-                    android:id="@+id/notification"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginVertical="16dp"
-                    android:src="@drawable/notification" />
 
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/tv_search"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -54,22 +48,12 @@
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="12dp"
                     android:text="  Tìm kiếm đơn hàng" />
-                <ImageView
-                    android:id="@+id/btn_camera"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/icon_camera"
-                    android:layout_below="@+id/notification"
-                    android:layout_alignParentEnd="true"
-                />
+
                 <fragment
                     android:id="@+id/map_view_home"
                     android:layout_below="@+id/tv_search"
                     android:layout_width="match_parent"
                     android:layout_height="126dp"
-                    android:layout_marginTop="16dp"
                     android:name="com.google.android.gms.maps.SupportMapFragment"
                     />
 
@@ -86,6 +70,7 @@
                     android:orientation="vertical">
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rcy_order"
+                        android:layout_marginTop="24dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

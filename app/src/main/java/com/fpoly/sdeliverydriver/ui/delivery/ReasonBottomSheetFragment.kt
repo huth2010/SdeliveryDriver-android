@@ -21,7 +21,7 @@ class ReasonBottomSheetFragment : PolyBaseBottomSheet<FragmentReasonBottomSheetB
 
     private fun setupUi() {
         val adapter = CancelReasonAdapter(createCancelReasonsList()){
-            deliveryViewModel.handle(DeliveryViewAction.SetCurrentCancelReason(it))
+            deliveryViewModel.sendData(it)
             dismiss()
         }
         views.recyclerViewCancelReasons.adapter=adapter

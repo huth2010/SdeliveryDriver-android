@@ -14,11 +14,14 @@
 
         <TextView
             android:id="@+id/id_order"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
+            android:layout_toStartOf="@+id/status"
+            android:maxLines="1"
             android:text="#252893"
+            android:textAlignment="textEnd"
             android:maxLength="6"
             android:ellipsize="end"
             android:textColor="@color/blue"
@@ -61,6 +64,7 @@
             android:orientation="horizontal"
             android:weightSum="3">
             <LinearLayout
+                android:id="@+id/receive_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -100,15 +104,15 @@
                     android:textSize="15sp"/>
             </LinearLayout>
         </LinearLayout>
+
         <Button
             android:id="@+id/btn_take_order"
-            android:layout_below="@+id/id_order"
-            android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:paddingVertical="8dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/name_product"
             android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
             android:text="Nhận" />
 
     </RelativeLayout>

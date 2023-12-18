@@ -71,7 +71,9 @@ class ConfirmDeliveryFragment : PolyBaseFragment<FragmentConfirmDeliveryBinding>
         }
 
         views.btnChoosePhoto.setOnClickListener { selectImageFromGallery() }
-        views.btnConfirm.setOnClickListener { createDeliveryOrder() }
+        views.btnConfirm.setOnClickListener {
+            createDeliveryOrder()
+        }
     }
 
     private fun registerPictureLauncher() {
@@ -194,6 +196,7 @@ class ConfirmDeliveryFragment : PolyBaseFragment<FragmentConfirmDeliveryBinding>
                         views.comment.text.toString().toRequestBody(mediaType),
                         "".toRequestBody(mediaType)
                     )
+                    views.progressBar.visibility=View.VISIBLE
                     handleCreateDeliveryOrder(createRequest)
                 } else {
                     showSnackbar(requireView(), "Error creating delivery order", false, "") {}
@@ -288,6 +291,7 @@ class ConfirmDeliveryFragment : PolyBaseFragment<FragmentConfirmDeliveryBinding>
         }
         when (it.asyncCreateDelivery) {
             is Success -> {
+                views.progressBar.visibility=View.VISIBLE
                 showSuccessDialog()
                 findNavController().popBackStack()
             }

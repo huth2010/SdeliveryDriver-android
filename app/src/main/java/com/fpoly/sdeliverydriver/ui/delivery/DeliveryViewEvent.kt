@@ -5,4 +5,5 @@ import com.fpoly.sdeliverydriver.core.PolyViewEvent
 sealed class DeliveryViewEvent : PolyViewEvent {
     object OpenCamera : DeliveryViewEvent()
     object ShowPermissionDeniedToast : DeliveryViewEvent()
+    data class CancelReason(val data:String): DeliveryViewEvent()
 }
